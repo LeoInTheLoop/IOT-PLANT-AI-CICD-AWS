@@ -28,7 +28,7 @@ const Predictions: React.FC<{ image: string | null }> = ({ image }) => {
                 return fd;
             })
             .then((fd) =>
-                fetch(import.meta.env.VITE_MODEL_URL || "http://localhost:5000/predict", {
+                fetch(import.meta.env.VITE_MODEL_URL || "http://localhost:5001/predict", {
                     method: "POST",
                     body: fd,
                     signal,
@@ -51,7 +51,7 @@ const Predictions: React.FC<{ image: string | null }> = ({ image }) => {
 
     return (
         <>
-            <ToastContainer position="bottom-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" transition={Bounce} />
+            <ToastContainer position="bottom-center" autoClose={5001} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" transition={Bounce} />
 
             <div className="relative flex flex-col gap-4 bg-white rounded-md shadow-xl w-full p-6 border border-gray-200">
                 <div className="rounded-md p-4">
