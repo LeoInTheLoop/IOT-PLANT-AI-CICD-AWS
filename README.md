@@ -1,10 +1,7 @@
-<h1 align="center">🔎 Digit Classifier</h1>
-
-![screenshot](https://github.com/user-attachments/assets/de0e06fc-7f17-4a47-aabc-ea75e19135ef)
 
 This project is my "Hello World" as a machine learning student. It features a digit classifier powered by a TensorFlow Neural Network, trained on the MNIST dataset. The API is wrapped in a Docker image, and there’s even a cool React frontend where you can draw digits and see instant predictions!
 
-✨ Try the app live at [https://digit-classifier.ahmedsobhy.net](https://digit-classifier.ahmedsobhy.net)
+
 
 ## 📁 Project Structure
 
@@ -40,7 +37,7 @@ This project is my "Hello World" as a machine learning student. It features a di
 3. **Access the services**:
 
     - **React Frontend**: Open `http://localhost:3000` in your browser to use the frontend app.
-    - **FastAPI Backend**: The backend API will be accessible at `http://localhost:5000`.
+    - **FastAPI Backend**: The backend API will be accessible at `http://localhost:5001`.
 
 ### 🔗 API Endpoints
 
@@ -94,9 +91,7 @@ If you prefer to build and run the React frontend without Docker, follow these s
 
     The frontend app will be available at `http://localhost:3000` (port may vary).
 
-## 🌐 Live Demo
 
-No need to set up locally? Try the live version here: [https://digit-classifier.ahmedsobhy.net/](https://digit-classifier.ahmedsobhy.net/).
 
 ## 🧠 Model Architecture
 

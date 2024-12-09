@@ -7,8 +7,8 @@ const Navigation: React.FC = () => {
             <Link to="/" className="text-purple-800 underline">
                 Main Page
             </Link>
-            <Link to="/newpage" className="text-purple-800 underline">
-                New Page
+            <Link to="/oldpageForTest" className="text-purple-800 underline">
+            oldpageForTest
             </Link>
         </nav>
     );
