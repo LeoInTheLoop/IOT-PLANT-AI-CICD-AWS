@@ -3,3 +3,12 @@ numpy==1.26.4
 Pillow==9.5.0
 fastapi==0.95.0
 uvicorn==0.30.0
+
+# tensorflow
+scikit-learn
+joblib
+# numpy
+# pillow
+# fastapi
+# uvicorn
+python-multipart
