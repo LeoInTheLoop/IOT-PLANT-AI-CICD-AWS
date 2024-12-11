@@ -56,7 +56,7 @@ const MachinePage: React.FC = () => {
         tool_wear: 100 + Math.random() * 50,
         type: 'M'
       };
-      
+
       setSensorData(mockData);
       setHistoricalData(prev => [...prev, mockData].slice(-20));
 
@@ -92,13 +92,13 @@ const MachinePage: React.FC = () => {
   return (
     <div className="p-6">
       {/* <h1 className="text-2xl font-bold mb-6">设备监控仪表盘</h1> */}
-      <h1 className="text-2xl font-bold mb-6">Equipment Monitoring Dashboard-设备监控仪表盘</h1>
+      <h1 className="text-2xl font-bold mb-6">Equipment Monitoring Dashboard</h1>
 
-      
+
       {/* 状态概览 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <div className="p-4 bg-white rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-2">Device Status-设备状态</h2>
+          <h2 className="text-lg font-semibold mb-2">Device Status</h2>
           {prediction && (
             <div className={`p-4 rounded-lg ${getStatusColor(prediction.status)}`}>
               {prediction.status}
@@ -107,7 +107,7 @@ const MachinePage: React.FC = () => {
         </div>
 
         <div className="p-4 bg-white rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-2">Maintenance recommendations-维护建议</h2>
+          <h2 className="text-lg font-semibold mb-2">Maintenance recommendations</h2>
           {prediction?.recommendation && (
             <div className="p-4 bg-blue-50 text-blue-800 rounded-lg">
               {prediction.recommendation}
@@ -116,14 +116,14 @@ const MachinePage: React.FC = () => {
         </div>
 
         <div className="p-4 bg-white rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-2">Predictive Probability-预测概率</h2>
+          <h2 className="text-lg font-semibold mb-2">Predictive Probability</h2>
           {prediction?.individual_predictions && (
             <div className="space-y-2">
-              <div>Neural Network-神经网络: {(prediction.individual_predictions.neural_network * 100).toFixed(1)}%</div>
-              <div>决策树: {(prediction.individual_predictions.decision_tree * 100).toFixed(1)}%</div>
-              <div>随机森林: {(prediction.individual_predictions.random_forest * 100).toFixed(1)}%</div>
+              <div>Neural Network: {(prediction.individual_predictions.neural_network * 100).toFixed(1)}%</div>
+              <div>Decision Tree: {(prediction.individual_predictions.decision_tree * 100).toFixed(1)}%</div>
+              <div>Random Forest: {(prediction.individual_predictions.random_forest * 100).toFixed(1)}%</div>
               <div className="font-bold mt-2">
-                综合预测: {(prediction.ensemble_probability * 100).toFixed(1)}%
+                Comprehensive Prediction: {(prediction.ensemble_probability * 100).toFixed(1)}%
               </div>
             </div>
           )}
@@ -132,7 +132,7 @@ const MachinePage: React.FC = () => {
 
       {/* 传感器数据图表 */}
       <div className="bg-white rounded-lg shadow mb-6 p-4">
-        <h2 className="text-lg font-semibold mb-4">Sensor Data Trends-传感器数据趋势</h2>
+        <h2 className="text-lg font-semibold mb-4">Sensor Data Trends</h2>
         <div className="w-full overflow-x-auto">
           <LineChart width={800} height={400} data={historicalData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -149,7 +149,7 @@ const MachinePage: React.FC = () => {
 
       {/* 实时传感器数据 */}
       <div className="bg-white rounded-lg shadow p-4">
-        <h2 className="text-lg font-semibold mb-4">Real-Time Sensor Data-实时传感器数据</h2>
+        <h2 className="text-lg font-semibold mb-4">Real-Time Sensor Data</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {sensorData && Object.entries(sensorData).map(([key, value]) => (
             <div key={key} className="p-4 bg-gray-50 rounded-lg">
