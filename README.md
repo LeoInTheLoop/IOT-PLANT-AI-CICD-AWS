@@ -196,6 +196,3 @@ project1/
 ## 数据来源
 
 数据来源：[kaggle - Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification)
-```
-
-这个 Markdown 文件提供了一个清晰的指南，用于部署和开发 IoT 预测性维护项目。
