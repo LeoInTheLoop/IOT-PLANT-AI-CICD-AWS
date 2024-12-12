@@ -1,12 +1,4 @@
-# from tensorflow.keras.models import load_model
-# from os.path import join
-# from io import BytesIO
-# import numpy as np
-# import PIL.Image as Image
-# import PIL.ImageOps as ImageOps
-# from fastapi import FastAPI, File, UploadFile
-# from fastapi.middleware.cors import CORSMiddleware
-# from pathlib import Path
+
 
 # BASE_DIR = Path(__file__).resolve().parent
 
@@ -14,20 +6,6 @@
 # tensorflow_nn_model = load_model(
 #     join(BASE_DIR, "trained_models", "tensorflow_nn_model.keras")
 # )
-
-
-# def preprocess_image(contents: bytes) -> np.ndarray:
-#     pil_image = Image.open(BytesIO(contents))
-#     pil_image = pil_image.convert("L")
-#     pil_image = ImageOps.invert(pil_image)
-#     pil_image = pil_image.resize((20, 20), Image.Resampling.LANCZOS)
-
-#     image_array = np.array(pil_image).astype(np.float32)
-#     image_array = np.pad(image_array, 4, mode="constant", constant_values=0)
-#     image_array = image_array.reshape(1, -1) / 255.0
-
-#     return image_array
-
 
 # # FastAPI
 # app = FastAPI(docs_url=None, redoc_url=None)
@@ -63,7 +41,7 @@
 
 
 from tensorflow.keras.models import load_model
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 from os.path import join
@@ -71,6 +49,10 @@ import numpy as np
 from pydantic import BaseModel
 import joblib
 
+from typing import Annotated
+
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+from datetime import datetime
 # 定义输入数据模型
 class SensorData(BaseModel):
     air_temperature: float
@@ -163,3 +145,102 @@ async def predict_maintenance(data: SensorData):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+ 
+
+
+class Sensor(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    machine_id: str
+    ProductType: str
+    airtemp: float
+    processtemp: float
+    Rotationalspeed: int
+    torque: float
+    toolwearinmins: int
+    status: str
+    temp: float
+    timestamp: datetime = Field(default_factory=datetime.utcnow)  # 默认接收
+    
+
+# Define another table, if necessary
+class Machine(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    MachineName: str
+
+# Database connection setup
+sqlite_file_name = "database.db"
+
+
+DATABASE_URL = "postgresql://postgres:postgres@db:5432/sensor_data"
+engine = create_engine(DATABASE_URL, echo=True)
+
+
+
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+SessionDep = Annotated[Session, Depends(get_session)]
+
+
+
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
+
+# Create a new sensor entry
+@app.post("/sensors/")
+def create_sensor(sensor: Sensor, session: SessionDep) -> Sensor:
+    try:
+        session.add(sensor)
+        session.commit()
+        session.refresh(sensor)
+        return sensor
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Read multiple sensor entries
+@app.get("/sensors/")
+def read_sensors(
+    session: SessionDep,
+    offset: int = 0,
+    limit: Annotated[int, Query(le=100)] = 100,
+) -> list[Sensor]:
+    sensors = session.exec(select(Sensor).offset(offset).limit(limit)).all()
+    return sensors
+
+# Read a single sensor entry by ID
+@app.get("/sensors/{sensor_id}")
+def read_sensor(sensor_id: int, session: SessionDep) -> Sensor:
+    sensor = session.get(Sensor, sensor_id)
+    if not sensor:
+        raise HTTPException(status_code=404, detail="Sensor not found")
+    return sensor
+
+# Update a sensor entry
+@app.put("/sensors/{sensor_id}")
+def update_sensor(sensor_id: int, updated_sensor: Sensor, session: SessionDep) -> Sensor:
+    sensor = session.get(Sensor, sensor_id)
+    if not sensor:
+        raise HTTPException(status_code=404, detail="Sensor not found")
+    for key, value in updated_sensor.dict(exclude_unset=True).items():
+        setattr(sensor, key, value)
+    session.add(sensor)
+    session.commit()
+    session.refresh(sensor)
+    return sensor
+
+# Delete a sensor entry
+@app.delete("/sensors/{sensor_id}")
+def delete_sensor(sensor_id: int, session: SessionDep):
+    sensor = session.get(Sensor, sensor_id)
+    if not sensor:
+        raise HTTPException(status_code=404, detail="Sensor not found")
+    session.delete(sensor)
+    session.commit()
+    return {"ok": True}

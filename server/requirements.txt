@@ -12,3 +12,6 @@ joblib
 # fastapi
 # uvicorn
 python-multipart
+
+#sql
+sqlmodel
