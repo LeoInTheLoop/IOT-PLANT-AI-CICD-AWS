@@ -36,6 +36,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: sensor_data
+      DB_RESET: true  # 可选，用于触发数据库重建逻辑
     ports:
       - "5432:5432"
     healthcheck:
