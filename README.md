@@ -1,7 +1,8 @@
 # 待办事项列表
 
 ## 进行中
-- 后端创建SQL数据库，并实现增、改、查、删功能（孔）
+1. **后端集成MQTT**
+   - 后端加入MQTT支持。 （孔
 
 ## 想法
 
@@ -13,30 +14,30 @@
    - 实现前端通过GET请求`/machines`获取数据，并展示在`machinelist`页面。
    - 实现前端通过GET请求`/machines/:id`获取数据，并展示在`detail`页面。
 
-3. **后端数据库操作**
-   - 后端创建SQL数据库，并实现增、改、查、删功能。
 
-4. **后端集成MQTT**
+
+3. **后端集成MQTT**
    - 后端加入MQTT支持。
 
-5. **MQTT与数据库集成**
+4. **MQTT与数据库集成**
    - 实现MQTT接收数据并写入SQL数据库。
 
-6. **后端接口开发**
+5. **后端接口开发**
    - 后端开发接口，接收POST请求，并返回预测结果（暂时使用POST代替MQTT接收数据）。
 
-7. **前端展示ML结果**
+6. **前端展示ML结果**
    - 前端接收机器学习预测结果，并进行展示。
 
-8. **数据库数据存储**
+7. **数据库数据存储**
    - SQL数据库存储相关数据。
 
-9. **前端详情页图表展示**
+8. **前端详情页图表展示**
    - 设计并实现前端`detail`页面的折线图展示。
 
-10. **文档规范**
-    - 制定并遵循Markdown格式规范，确保文档通顺、规范。
 
+
+## 完成
+    - 后端创建SQL数据库，并实现增、改、查、删功能（孔）
 
 
 ***
@@ -140,6 +141,11 @@ project1/
 ├── server/ # 后端代码
 │ ├── trained_models/ # 机器学习模型
 │ └── main.py # FastAPI 应用
+  └── db.py #  数据库相关
+  └── db init.py # 导入数据
+  └── ai.py  #ai 模型相关
+  └── mqtt receive.py #链接mqtt
+
 └── docker-compose.yml # Docker 配置文件
 ```
 
@@ -196,3 +202,16 @@ project1/
 ## 数据来源
 
 数据来源：[kaggle - Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification)
+
+
+senser sql 接收
+        Sensor(
+            machine_id="M",
+            ProductType="M",
+            airtemp=301.4,
+            processtemp=310.6,
+            Rotationalspeed=1630,
+            torque=30.3,
+            toolwearinmins=2,
+            timestamp="2023-12-14T00:00:10"
+        )
