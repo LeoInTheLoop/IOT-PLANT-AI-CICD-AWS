@@ -14,3 +14,6 @@ python-multipart
 # SQL
 sqlmodel
 psycopg2-binary
+
+#mqtt
+paho-mqtt

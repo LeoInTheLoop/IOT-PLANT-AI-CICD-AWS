@@ -19,6 +19,7 @@ class Sensor(SQLModel, table=True):
     torque: float
     toolwearinmins: int
     timestamp: datetime = Field(default_factory=datetime.utcnow)
+    mqtt_message_id: str = Field(default=None) 
 
 
 

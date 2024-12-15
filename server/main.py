@@ -10,6 +10,8 @@ from ai import predict_ensemble
 
 from sqlmodel import Session, select
 
+from mqttReceive import start_mqtt_client
+
 
 app = FastAPI()
 
@@ -24,6 +26,7 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+    start_mqtt_client()
 
 @app.get("/health")
 def health_check():
