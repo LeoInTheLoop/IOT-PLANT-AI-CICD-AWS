@@ -1,7 +1,8 @@
 # 待办事项列表
 
 ## 进行中
-- 后端创建SQL数据库，并实现增、改、查、删功能（孔）
+1. **后端集成MQTT**
+   - 后端加入MQTT支持。 （孔
 
 ## 想法
 
@@ -13,30 +14,30 @@
    - 实现前端通过GET请求`/machines`获取数据，并展示在`machinelist`页面。
    - 实现前端通过GET请求`/machines/:id`获取数据，并展示在`detail`页面。
 
-3. **后端数据库操作**
-   - 后端创建SQL数据库，并实现增、改、查、删功能。
 
-4. **后端集成MQTT**
+
+3. **后端集成MQTT**
    - 后端加入MQTT支持。
 
-5. **MQTT与数据库集成**
+4. **MQTT与数据库集成**
    - 实现MQTT接收数据并写入SQL数据库。
 
-6. **后端接口开发**
+5. **后端接口开发**
    - 后端开发接口，接收POST请求，并返回预测结果（暂时使用POST代替MQTT接收数据）。
 
-7. **前端展示ML结果**
+6. **前端展示ML结果**
    - 前端接收机器学习预测结果，并进行展示。
 
-8. **数据库数据存储**
+7. **数据库数据存储**
    - SQL数据库存储相关数据。
 
-9. **前端详情页图表展示**
+8. **前端详情页图表展示**
    - 设计并实现前端`detail`页面的折线图展示。
 
-10. **文档规范**
-    - 制定并遵循Markdown格式规范，确保文档通顺、规范。
 
+
+## 完成
+    - 后端创建SQL数据库，并实现增、改、查、删功能（孔）
 
 
 ***
@@ -140,6 +141,11 @@ project1/
 ├── server/ # 后端代码
 │ ├── trained_models/ # 机器学习模型
 │ └── main.py # FastAPI 应用
+  └── db.py #  数据库相关
+  └── db init.py # 导入数据
+  └── ai.py  #ai 模型相关
+  └── mqtt receive.py #链接mqtt
+
 └── docker-compose.yml # Docker 配置文件
 ```
 
@@ -188,11 +194,116 @@ project1/
      - 清除缓存：`npm cache clean --force`
 
 4. API 连接失败
-   - 检查：
-     - 后端服务是否运行：`docker ps`
-     - API URL 是否正确
-     - 查看后端日志：`docker logs project1-server-1`
+检查：
+后端服务是否运行： docker ps
+API URL 是否正确
+查看后端日志： docker logs project1-server-1
 
-## 数据来源
 
-数据来源：[kaggle - Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification)
+
+## 📁 Project Structure
+
+-   **`frontend/`** - The React frontend app, where users can draw digits and have fun! 🎨
+-   **`models/`** - TensorFlow model files live here! 🧠
+-   **`server/`** - FastAPI application folder, the brain of our backend! 🖥️
+-   **`docker-compose.yml`** - Docker Compose configuration to build and run both frontend and backend services. 📦
+
+## 🚀 Getting Started
+
+### ✅ Prerequisites
+
+-   **Docker** - To build and run the API in a container. 🐋
+-   **Node.js and npm** - For building the frontend application. 📦
+
+### 🛠️ Building and Running the Application with Docker Compose
+
+1. **Clone the repository**:
+
+    ```bash
+    git clone https://github.com/AhmedSobhy01/digit-classifier.git
+    cd digit-classifier
+    ```
+
+2. **Build and start the services**:
+
+    ```bash
+    docker-compose up --build -d
+    ```
+
+    This command builds the Docker images for both the React frontend and the FastAPI backend, then starts the services defined in `docker-compose.yml`.
+
+3. **Access the services**:
+
+    - **React Frontend**: Open `http://localhost:3000` in your browser to use the frontend app.
+    - **FastAPI Backend**: The backend API will be accessible at `http://localhost:5001`.
+
+### 🔗 API Endpoints
+
+-   **POST /predict**: Predict the digit from an uploaded image file. 📸
+
+    #### Example Request
+
+    ```bash
+    curl -X POST "http://localhost:5000/predict" -H "Content-Type: multipart/form-data" -F "file=@your_image_file.png"
+    ```
+
+    -   **`file`**: The image file you want to classify. 🎯
+
+    #### Example Response
+
+    ```json
+    {
+        "message": "Prediction successful",
+        "prediction": 1,
+        "probabilities": [2.6359641196904704e-5, 0.7292985916137695, 3.460873995209113e-5, 0.10600192844867706, 0.005066428333520889, 0.053292419761419296, 3.709441443788819e-6, 0.002449796535074711, 0.005420663394033909, 0.09840560704469681]
+    }
+    ```
+
+## 🎨 Building the Frontend Web Application (Optional)
+
+If you prefer to build and run the React frontend without Docker, follow these steps:
+
+1. **Navigate to the `frontend` directory**:
+
+    ```bash
+    cd frontend
+    ```
+
+2. **Install the necessary dependencies**:
+
+    ```bash
+    npm install
+    ```
+
+3. **Build the frontend application**:
+
+    ```bash
+    npm run build
+    ```
+
+4. **Serve the application locally**:
+
+    ```bash
+    npm start
+    ```
+
+    The frontend app will be available at `http://localhost:3000` (port may vary).
+
+
+
+## 🧠 Model Architecture
+
+The neural network model used is a simple yet powerful one:
+
+-   **Input Layer**: 784 neurons (28x28 pixels, flattened)
+-   **Hidden Dropout Layer**
+-   **Hidden Dense Layer**: 1 fully connected layer with ReLU activation
+-   **Output Layer**: 10 neurons (one for each digit class) with softmax activation
+
+## 🎓 Model Training
+
+The model was trained using the MNIST dataset. Want to retrain it? Use the `models/tensorflow_nn_model.py` script.
+
+## 📜 License
+
+This project is licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file.

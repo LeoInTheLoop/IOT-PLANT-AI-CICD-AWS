@@ -104,11 +104,11 @@ const MachinePage: React.FC = () => {
           <h2 className="text-lg font-semibold mb-2">Predictive Probability</h2>
           {prediction?.individual_predictions && (
             <div className="space-y-2">
-              <div>Neural Network-神经网络: {(prediction.individual_predictions.neural_network * 100).toFixed(1)}%</div>
-              <div>决策树: {(prediction.individual_predictions.decision_tree * 100).toFixed(1)}%</div>
-              <div>随机森林: {(prediction.individual_predictions.random_forest * 100).toFixed(1)}%</div>
+              <div>Neural Network: {(prediction.individual_predictions.neural_network * 100).toFixed(1)}%</div>
+              <div>Decision Tree: {(prediction.individual_predictions.decision_tree * 100).toFixed(1)}%</div>
+              <div>Random Forest: {(prediction.individual_predictions.random_forest * 100).toFixed(1)}%</div>
               <div className="font-bold mt-2">
-                综合预测: {(prediction.ensemble_probability * 100).toFixed(1)}%
+                Comprehensive Prediction: {(prediction.ensemble_probability * 100).toFixed(1)}%
               </div>
             </div>
           )}

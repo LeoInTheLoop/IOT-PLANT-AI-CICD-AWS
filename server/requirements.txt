@@ -4,11 +4,16 @@ Pillow==9.5.0
 fastapi==0.95.0
 uvicorn==0.30.0
 
-# tensorflow
+# ML & Data Processing
 scikit-learn
 joblib
-# numpy
-# pillow
-# fastapi
-# uvicorn
+
+# FastAPI Extensions
 python-multipart
+
+# SQL
+sqlmodel
+psycopg2-binary
+
+#mqtt
+paho-mqtt
