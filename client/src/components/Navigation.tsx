@@ -1,15 +1,24 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import '../styles/Navigation.css';
+import dashboardIcon from '../assets/nav-icon.png'; // 导入图片
 
 const Navigation: React.FC = () => {
     return (
-        <nav className="flex gap-4 mt-4">
-            <Link to="/" className="text-purple-800 underline">
-                Main Page
-            </Link>
-            <Link to="/oldpageForTest" className="text-purple-800 underline">
-            oldpageForTest
-            </Link>
+        <nav className="nav">
+            <h3 className="nav-title">
+                <img
+                    src={dashboardIcon}
+                    alt="Dashboard Icon"
+                    className="nav-icon"
+                />
+                Dashboard
+            </h3>
+            {/* <ul className="nav-list">
+                <li className="nav-item">test</li>
+                <li className="nav-item">test</li>
+                <li className="nav-item">test</li>
+                <li className="nav-item">test</li>
+            </ul> */}
         </nav>
     );
 };

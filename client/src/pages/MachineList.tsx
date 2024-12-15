@@ -1,44 +1,75 @@
-import Navigation from ".././components/Navigation.tsx";
-import { Link } from "react-router-dom";
-import MachineCard from "../components/Machine.tsx";
+import React, { useState } from 'react';
+import Machine from "../components/Machine";
+import Navigation from '../components/Navigation';
+import FilterTabs from '../components/FilterTabs';
+import '../styles/MachineList.css';
 
-const MachineList = () => {
+const machines = [
+  {
+    Machinename: "machinename 1",
+    id: "1",
+    ProductType: "Type A",
+    airtemp: 25.5,
+    processtemp: 30,
+    Rotationalspeed: 1500,
+    torque: 20.5,
+    toolwearinmins: 50,
+    status: "On",
+    temp: 75,
+  },
+  {
+    Machinename: "machinename 2",
+    id: "2",
+    ProductType: "M",
+    airtemp: 25.5,
+    processtemp: 500,
+    Rotationalspeed: 1500,
+    torque: 20.5,
+    toolwearinmins: 50,
+    status: "Off",
+    temp: 75,
+  },
+  {
+    Machinename: "machinename 3",
+    id: "3",
+    ProductType: "L",
+    airtemp: 20,
+    processtemp: 25,
+    Rotationalspeed: 1800,
+    torque: 30,
+    toolwearinmins: 60,
+    status: "On",
+    temp: 65,
+  },
+];
+
+const MachineList: React.FC = () => {
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  const filteredMachines = machines.filter(machine => {
+    if (activeFilter === 'All') return true;
+    return machine.status === activeFilter;
+  });
+
   return (
-    <div>
+    <div className="content-wrapper">
       <Navigation />
+      <div className="main-content">
+        <FilterTabs
+          activeFilter={activeFilter}
+          setActiveFilter={setActiveFilter}
+        />
 
-      <p> use this page to should overal machine status </p>
- 
-      <Link to="/" className="text-purple-800 underline"></Link>
-
-      <MachineCard
-        Machinename="machinename 1"
-        id="1"
-        ProductType="Type A"
-        airtemp={parseFloat("25.5")} // Example: converting string to number
-        processtemp={parseFloat("30")}
-        Rotationalspeed={parseInt("1500", 10)}
-        torque={parseFloat("20.5")}
-        toolwearinmins={parseInt("50", 10)}
-        status="On"
-        temp={parseFloat("75")}
-        conversionRate={parseFloat("-15.2")}
-      />
-
-       <MachineCard
-        Machinename="machinename 2"
-        id="2"
-        ProductType="Type b"
-        airtemp={parseFloat("25.5")} // Example: converting string to number
-        processtemp={parseFloat("500")}
-        Rotationalspeed={parseInt("1500", 10)}
-        torque={parseFloat("20.5")}
-        toolwearinmins={parseInt("50", 10)}
-        status="Off"
-        temp={parseFloat("75")}
-        conversionRate={parseFloat("-15.2")}
-      />
-
+        <div className="machine-grid">
+          <h2 className='card-title'>Machine List</h2>
+          {filteredMachines.map(machine => (
+            <Machine
+              key={machine.id}
+              {...machine}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
