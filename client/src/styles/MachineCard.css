@@ -35,14 +35,16 @@
     display: flex;
     flex-direction: column;
     background-color: white;
-    border-radius: 0.5rem;
+    /* border-radius: 0.5rem; */
     border-collapse: collapse;
-    padding: 0.5rem;
+    padding: 1rem;
+    padding-left: 3rem;
     margin: 0;
     font-weight: 700;
     font-size: 1.1rem;
     cursor: pointer;
-    padding-left: 1rem;
+    border-bottom: 1px solid #ccc;
+
 
 }
 
@@ -136,10 +138,12 @@
     padding: 0;
     border: none;
     border-radius: 0 0 8px 8px;
+
 }
 
 .card-dropdown.expanded {
     max-height: 500px;
+    /* background-color: #a93737; */
 }
 
 .card-body {
@@ -153,7 +157,7 @@
     font-size: 0.8rem;
     border: none;
     /* margin-left: 2rem; */
-    background-color: white;
+    background-color: #f2f5f9;
 
 }
 

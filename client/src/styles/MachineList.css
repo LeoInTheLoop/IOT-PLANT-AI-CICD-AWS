@@ -12,6 +12,7 @@
 .machine-grid {
     display: flex;
     flex-direction: column;
+    border: 2px solid #eef0f4;
     /* gap: 1rem; */
     width: 100%;
     margin-left: auto;

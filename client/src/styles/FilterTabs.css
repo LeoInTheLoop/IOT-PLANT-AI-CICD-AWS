@@ -1,23 +1,27 @@
 .filter-tabs {
     display: grid;
-    gap: 1.5rem;
     padding: 1rem;
     background-color: white;
-    border-radius: 8px 8px 0 0;
     border: 1px solid #e2e8f0;
     margin-bottom: 1rem;
     grid-template-columns: 1fr 1fr 1fr;
+    border-radius: 0.5rem;
 }
 
 .filter-tab {
     font-size: 1.1rem;
     color: black;
     padding: 0.5rem 1rem;
-    border-radius: 5px;
+    /* border-radius: 5px; */
     background-color: transparent;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
+    border-right: 1px solid #ccc;
+}
+
+.filter-tab:last-child {
+    border-right: none;
 }
 
 .filter-tab:hover {
