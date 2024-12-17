@@ -109,3 +109,22 @@ async def test_db(session: Session = Depends(get_session)):
         return {"status": "success", "result": result}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
+
+@app.get("/machine/{machine_id}")
+def get_machine_latest_sensors(
+    machine_id: str, 
+    session: SessionDep, 
+    limit: int = 10  
+) -> List[Sensor]:
+    # 查询特定 machine_id 
+    sensors = (
+        session.exec(
+            select(Sensor)
+            .where(Sensor.machine_id == machine_id)
+            .order_by(Sensor.timestamp.desc())
+            .limit(limit)
+        ).all()
+    )
+    if not sensors:
+        raise HTTPException(status_code=404, detail=f"No sensors found for machine_id {machine_id}")
+    return sensors

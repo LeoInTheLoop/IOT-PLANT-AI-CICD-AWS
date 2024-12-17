@@ -54,7 +54,11 @@ const MachineCard: React.FC<MachineCardProps> = ({
 
         <div className="card-status">
           {actions || <p className={`status-indicator ${status === "On" ? "on" : "off"}`}>
-            {status || "Unknown"}
+            {status === "On" ? (
+              <p>working</p>
+            ) : (
+              <p>!</p>
+            )}
           </p>}
         </div>
       </div>
@@ -83,7 +87,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
           </p>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

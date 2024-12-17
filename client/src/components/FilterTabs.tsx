@@ -25,7 +25,7 @@ const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, setActiveFilter }
                 className={`filter-tab ${activeFilter === 'Off' ? 'active' : ''}`}
                 onClick={() => setActiveFilter('Off')}
             >
-                Offline
+                Fault
             </button>
         </div>
     );
