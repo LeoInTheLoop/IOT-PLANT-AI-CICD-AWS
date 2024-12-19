@@ -5,7 +5,7 @@ import MachinePage from './pages/MachinePage';
 // import MachinePage from "./pages/MachinePage";
 // import MachineList from "./pages/MachineList.tsx";
 
-import LineChartPage from "./pages/LineChartPage.tsx";
+
 
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MachineList />} />
           <Route path="/:id/detail" element={<MachinePage />} />
-          <Route path="/:id/linechart" element={<LineChartPage />} />
+
         </Routes>
       </Router>
     </div>

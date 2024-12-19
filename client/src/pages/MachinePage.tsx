@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 
 interface SensorData {
   air_temperature: number;
@@ -24,7 +24,7 @@ interface PredictionResult {
 }
 
 const MachinePage: React.FC = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
   const [sensorData, setSensorData] = useState<SensorData | null>(null);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const [historicalData, setHistoricalData] = useState<SensorData[]>([]);

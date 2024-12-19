@@ -9,7 +9,8 @@ from model import SensorData, get_maintenance_recommendation, prepare_features
 from ai import predict_ensemble
 
 from sqlmodel import Session, select
-
+from sqlalchemy import func
+from sqlalchemy.sql import text
 from mqttReceive import start_mqtt_client
 
 
@@ -74,6 +75,38 @@ def read_sensors(
     sensors = session.exec(select(Sensor).offset(offset).limit(limit)).all()
     return sensors
 
+@app.get("/machinelist/")
+def get_latest_machine(session: SessionDep) -> list[Sensor]:
+    latest_machines = (
+        session.exec(
+            select(Sensor)
+            .where(Sensor.timestamp.in_(
+                # Subquery to get the latest timestamp for each machine_id
+                select(func.max(Sensor.timestamp)).group_by(Sensor.machine_id)
+            ))
+        ).all()
+    )
+    return latest_machines
+
+@app.get("/machine/{machine_id}")
+def get_machine_latest_sensors(
+    machine_id: str, 
+    session: SessionDep, 
+    limit: int = 10  
+    ) -> list[Sensor]:
+    # 查询特定 machine_id 
+    sensors = (
+        session.exec(
+            select(Sensor)
+            .where(Sensor.machine_id == machine_id)
+            .order_by(Sensor.timestamp.desc())
+            .limit(limit)
+        ).all()
+    )
+    if not sensors:
+        raise HTTPException(status_code=404, detail=f"No sensors found for machine_id {machine_id}")
+    return sensors
+
 @app.get("/sensors/{sensor_id}")
 def read_sensor(sensor_id: int, session: SessionDep) -> Sensor:
     sensor = session.get(Sensor, sensor_id)
@@ -105,7 +138,7 @@ def delete_sensor(sensor_id: int, session: SessionDep):
 @app.get("/test-db")
 async def test_db(session: Session = Depends(get_session)):
     try:
-        result = session.execute(text('SELECT 1')).scalar()
+        result = session.execute('SELECT 1').scalar()
         return {"status": "success", "result": result}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
@@ -115,7 +148,7 @@ def get_machine_latest_sensors(
     machine_id: str, 
     session: SessionDep, 
     limit: int = 10  
-) -> List[Sensor]:
+) -> list[Sensor]:
     # 查询特定 machine_id 
     sensors = (
         session.exec(
