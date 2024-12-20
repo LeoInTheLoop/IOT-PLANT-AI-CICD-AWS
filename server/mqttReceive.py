@@ -43,7 +43,7 @@ def start_mqtt_client():
     client.on_message = on_message
     
     # 配置 MQTT Broker 地址和端口
-    client.connect("test.mosquitto.org", 1883, 60)
+    client.connect("broker.emqx.io", 1883, 60)
     client.on_connect = on_connect 
     # 订阅主题
     client.subscribe("sensor/data")
