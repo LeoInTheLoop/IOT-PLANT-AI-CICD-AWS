@@ -1,4 +1,3 @@
-
 services:
   client:
     build:
@@ -10,19 +9,20 @@ services:
         condition: service_healthy
 
   server:
-    build:
-      context: ./server
+    build: ./server
     ports:
-      - "5001:5000"
+      - "5001:5001"
     volumes:
       - ./server/trained_models:/app/trained_models
     environment:
-      - DATABASE_URL=sqlite:///app/database.db
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sensor_data
+    command: sh -c "python init_dbData.py && uvicorn main:app --host 0.0.0.0 --port 5001"
+
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:5001/health" ]
       interval: 30s
       retries: 3
       start_period: 10s
@@ -36,15 +36,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: sensor_data
-      DB_RESET: true  # 可选，用于触发数据库重建逻辑
+      DB_RESET: true # 可选，用于触发数据库重建逻辑
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 30s
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
       retries: 5
-      start_period: 10s
-      timeout: 10s
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
