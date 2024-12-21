@@ -55,8 +55,8 @@ def start_mqtt_client():
 '''
 # test method
 
-mosquitto_pub -h test.mosquitto.org -t "sensor/data" -m '{
-    "machine_id": "M1",
+mosquitto_pub -h broker.emqx.io -t "sensor/data" -m '{
+    "machine_id": "lll",
     "ProductType": "A",
     "airtemp": 25.0,
     "processtemp": 30.5,
