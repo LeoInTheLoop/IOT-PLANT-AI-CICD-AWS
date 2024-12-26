@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import FilterTabs from '../components/FilterTabs';
-import Machine from '../components/Machine';
+import MachineCard from '../components/Machine';
 
 interface Machine {
-  id: number; // 数据结构改为数字，确保与后端匹配
+  id: number;
   machine_id: string;
-  ProductType: string;
+  type: string;
   airtemp: number;
   processtemp: number;
-  Rotationalspeed: number;
+  rotationalspeed: number;
   torque: number;
   toolwearinmins: number;
   status?: string;
@@ -22,9 +22,9 @@ const MachineList: React.FC = () => {
   useEffect(() => {
     const fetchMachines = async () => {
       try {
-        const response = await fetch('http://localhost:5001/machinelist/');
+        const response = await fetch('http://localhost:5001/machines/latest');
         const data = await response.json();
-        console.log('Fetched machines:', data); // 调试输出
+        console.log('Fetched machines:', data);
         setMachines(data);
       } catch (error) {
         console.error('Error fetching machine data:', error);
@@ -35,16 +35,28 @@ const MachineList: React.FC = () => {
   }, []);
 
   const handlePredict = async (machine: Machine): Promise<string> => {
+    const payload = {
+      type: machine.type, 
+      airtemp: machine.airtemp,
+      processtemp: machine.processtemp,
+      rotationalspeed: machine.rotationalspeed,
+      torque: machine.torque,
+      toolwearinmins: machine.toolwearinmins,
+    };
+    
+  
     try {
-      const response = await fetch('/predict', {
+      const response = await fetch('http://localhost:5001/fakepredict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(machine),
+        body: JSON.stringify(payload),
       });
       const info = await response.json();
-      return info.message || 'Prediction complete';
+      console.log("geting predict")
+      console.log(info.status)
+      return info.status || 'Prediction complete';
     } catch (error) {
       console.error('Error sending prediction request:', error);
       return 'Error fetching prediction';
@@ -69,21 +81,18 @@ const MachineList: React.FC = () => {
           <h2 className='card-title'>Machine List</h2>
           {filteredMachines.length > 0 ? (
             filteredMachines.map(machine => (
-              <Machine
+              <MachineCard
                 key={machine.id}
-                id={machine.id.toString()}
-                Machinename={machine.machine_id}
-                ProductType={machine.ProductType}
+                id={machine.id}
+                machine_id={machine.machine_id}
+                type={machine.type}
                 airtemp={machine.airtemp}
                 processtemp={machine.processtemp}
-                Rotationalspeed={machine.Rotationalspeed}
+                rotationalspeed={machine.rotationalspeed}
                 torque={machine.torque}
                 toolwearinmins={machine.toolwearinmins}
                 status={machine.status || 'Unknown'}
-                onPredict={async () => {
-                  const result = await handlePredict(machine);
-                  return result;
-                }}
+                onPredict={() => handlePredict(machine)}
               />
             ))
           ) : (

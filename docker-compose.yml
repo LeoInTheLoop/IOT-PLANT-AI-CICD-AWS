@@ -35,7 +35,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sensor_data
+      POSTGRES_DB: Machine_data
       DB_RESET: true # 可选，用于触发数据库重建逻辑
     ports:
       - "5432:5432"
@@ -45,7 +45,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data:rw
 
 volumes:
   postgres_data:

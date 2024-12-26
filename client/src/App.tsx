@@ -14,7 +14,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<MachineList />} />
-          <Route path="/:id/detail" element={<MachinePage />} />
+          <Route path="/:machine_id/detail" element={<MachinePage />} />
 
         </Routes>
       </Router>

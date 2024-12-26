@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 import json
-from db import get_session, Sensor, engine
+from db import get_session, Machine, engine
 from sqlmodel import Session
 
 # MQTT 回调函数
@@ -9,10 +9,10 @@ def on_message(client, userdata, msg):
         # 解码接收到的消息
         payload = json.loads(msg.payload.decode('utf-8'))
         
-        # 创建一个 Sensor 实例
-        new_sensor_data = Sensor(
+        # 创建一个 Machine 实例
+        new_Machine_data = Machine(
             machine_id=payload.get("machine_id"),
-            ProductType=payload.get("ProductType"),
+            type=payload.get("ProductType"),
             airtemp=payload.get("airtemp"),
             processtemp=payload.get("processtemp"),
             Rotationalspeed=payload.get("Rotationalspeed"),
@@ -23,9 +23,9 @@ def on_message(client, userdata, msg):
         
         # 将数据存储到数据库
         with Session(engine) as session:
-            session.add(new_sensor_data)
+            session.add(new_Machine_data)
             session.commit()
-            print("New data inserted:", new_sensor_data)
+            print("New data inserted:", new_Machine_data)
     
     except Exception as e:
         print(f"Error processing MQTT message: {e}")
@@ -43,10 +43,10 @@ def start_mqtt_client():
     client.on_message = on_message
     
     # 配置 MQTT Broker 地址和端口
-    client.connect("broker.emqx.io", 1883, 60)
+    client.connect("broker.hivemq.com", 1883, 60)
     client.on_connect = on_connect 
     # 订阅主题
-    client.subscribe("sensor/data")
+    client.subscribe("Machine/data")
     
     # 开始 MQTT 客户端循环
     client.loop_start()
@@ -55,7 +55,7 @@ def start_mqtt_client():
 '''
 # test method
 
-mosquitto_pub -h broker.emqx.io -t "sensor/data" -m '{
+mosquitto_pub -h broker.hivemq.com -t "Machine/data" -m '{
     "machine_id": "lll",
     "ProductType": "A",
     "airtemp": 25.0,

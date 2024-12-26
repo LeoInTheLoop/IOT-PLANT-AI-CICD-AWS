@@ -5,21 +5,21 @@ from datetime import datetime
 
 # Database connection setup
 sqlite_file_name = "database.db"
-DATABASE_URL = "postgresql://postgres:postgres@db:5432/sensor_data"
+DATABASE_URL = "postgresql://postgres:postgres@db:5432/Machine_data"
 engine = create_engine(DATABASE_URL, echo=True)
 
-# Define Sensor table
-class Sensor(SQLModel, table=True):
+# Define table
+class Machine(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
-    machine_id: str
-    ProductType: str
+    machine_id: str = Field(default="unknown")
+    type: str
     airtemp: float
     processtemp: float
-    Rotationalspeed: int
+    rotationalspeed: int
     torque: float
     toolwearinmins: int
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-    mqtt_message_id: str = Field(default=None) 
+    mqtt_message_id: str = Field(default=None)
 
 
 

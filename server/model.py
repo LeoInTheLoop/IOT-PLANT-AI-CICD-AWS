@@ -2,17 +2,16 @@
 import numpy as np
 from pydantic import BaseModel
 
-# Define input data model
-class SensorData(BaseModel):
-    air_temperature: float
-    process_temperature: float
-    rotational_speed: float
+class MachineData(BaseModel):
+    airtemp: float
+    processtemp: float
+    rotationalspeed: float
     torque: float
-    tool_wear: float
+    toolwearinmins: float
     type: str
 
 # Maintenance recommendation logic
-def get_maintenance_recommendation(status: str, data: SensorData) -> str:
+def get_maintenance_recommendation(status: str, data: MachineData) -> str:
     if status == "Critical":
         return "Immediate maintenance required. Schedule downtime within 24 hours."
     elif status == "Warning":
@@ -20,7 +19,7 @@ def get_maintenance_recommendation(status: str, data: SensorData) -> str:
     return "Regular maintenance schedule. No immediate action required."
 
 # Feature engineering for input data
-def prepare_features(data: SensorData):
+def prepare_features(data: MachineData):
     return np.array([
         data.air_temperature,
         data.process_temperature,

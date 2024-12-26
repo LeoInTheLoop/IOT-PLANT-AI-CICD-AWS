@@ -1,33 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import '../styles/MachineCard.css';
 
 interface MachineCardProps {
-  id: string;
-  Machinename: string;
-  ProductType?: string; 
-  airtemp?: number; 
-  processtemp?: number; 
-  Rotationalspeed?: number; 
-  torque?: number; 
-  toolwearinmins?: number; 
-  status?: string; 
-  temp?: number; 
+  id: number; 
+  machine_id: string;
+  type: string;
+  airtemp: number;
+  processtemp: number;
+  rotationalspeed: number;
+  torque: number;
+  toolwearinmins: number;
+  status?: string;
   actions?: React.ReactNode;
-  onPredict?: () => Promise<string>; 
+  onPredict?: () => Promise<string>;
 }
 
 const MachineCard: React.FC<MachineCardProps> = ({
-  id,
-  Machinename,
-  ProductType,
+  machine_id,
+  type,
   airtemp,
   processtemp,
-  Rotationalspeed,
+  rotationalspeed,
   torque,
   toolwearinmins,
   status,
-  temp,
   actions,
   onPredict,
 }) => {
@@ -35,60 +32,60 @@ const MachineCard: React.FC<MachineCardProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [predictionResult, setPredictionResult] = useState<string | null>(null);
 
-  const handlePredict = async () => {
-    if (!onPredict) return;
-    setIsLoading(true);
-    try {
-      const result = await onPredict();
-      setPredictionResult(result);
-    } catch (error) {
-      console.error('Prediction error:', error);
-      setPredictionResult('Error fetching prediction.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchPrediction = async () => {
+      if (onPredict) {
+        setIsLoading(true);
+        try {
+          const result = await onPredict();
+          console.log('Prediction result:', result); // Debug log
+          setPredictionResult(result);
+        } catch (error) {
+          console.error('Prediction failed:', error);
+          setPredictionResult('Prediction failed');
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchPrediction();
+  }, [onPredict]);
 
   return (
     <div className={`card-container ${isExpanded ? 'expanded' : ''}`}>
       <div className="card-main">
         <div className="card-header" onClick={() => setIsExpanded(!isExpanded)}>
-          <p>{Machinename}</p>
+          <p>{machine_id}</p>
         </div>
-
         <div className="card-footer">
-          <Link to={`/${id}/detail`} className="card-info">
-            <p>More Info</p>
+          <Link to={`/${machine_id}/detail`} className="card-info">
+            More Information
           </Link>
-
         </div>
-
         <div className="card-status">
           {actions || (
             <p className={`status-indicator ${status === "On" ? "on" : "off"}`}>
-              {status || "Unknown"}
+              {status || "unknown"}
             </p>
           )}
         </div>
       </div>
 
-      {/* Dropdown content */}
       <div className={`card-dropdown ${isExpanded ? 'expanded' : ''}`}>
         <div className="card-body">
-          <p><strong>Product Type:</strong> {ProductType || "N/A"}</p>
-          <p><strong>Air Temp:</strong> {airtemp || "N/A"}</p>
-          <p><strong>Process Temp:</strong> {processtemp || "N/A"}</p>
-          <p><strong>Rotational Speed:</strong> {Rotationalspeed || "N/A"} RPM</p>
-          <p><strong>Torque:</strong> {torque || "N/A"} Nm</p>
-          <p><strong>Tool Wear:</strong> {toolwearinmins || "N/A"} mins</p>
-          <p><strong>Temp:</strong> {temp || "N/A"}</p>
+          {type && <p>Type: {type}</p>}
+          {airtemp !== undefined && <p>Air Temperature: {airtemp} °C</p>}
+          {processtemp !== undefined && <p>Process Temperature: {processtemp} °C</p>}
+          {rotationalspeed !== undefined && <p>Rotational Speed: {rotationalspeed} RPM</p>}
+          {torque !== undefined && <p>Torque: {torque} Nm</p>}
+          {toolwearinmins !== undefined && <p>Tool Wear: {toolwearinmins} min</p>}
         </div>
         <div className="card-actions">
-          <button onClick={handlePredict} disabled={isLoading} className="predict-btn">
-            {isLoading ? 'Predicting...' : 'Predict'}
-          </button>
-          {predictionResult && (
-            <p className="prediction-result">{predictionResult}</p>
+          {isLoading ? (
+            <p className="prediction-result">Predicting...</p>
+          ) : (
+            predictionResult && <p className="prediction-result">{predictionResult}</p>
           )}
         </div>
       </div>

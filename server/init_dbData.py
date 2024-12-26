@@ -1,119 +1,83 @@
-from sqlmodel import Session, create_engine, SQLModel
-from db import Sensor, create_db_and_tables  
+from sqlmodel import Field, Session, SQLModel, create_engine
+from fastapi import Depends, FastAPI, HTTPException
+from typing import Annotated
+from datetime import datetime
+import random
+from datetime import timedelta
 
-# 数据库连接设置
+# Database connection setup
 sqlite_file_name = "database.db"
-DATABASE_URL = "postgresql://postgres:postgres@db:5432/sensor_data"
+DATABASE_URL = "postgresql://postgres:postgres@db:5432/Machine_data"
 engine = create_engine(DATABASE_URL, echo=True)
 
-# 初始化数据
+# Define table
+class Machine(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    machine_id: str = Field(default="unknown")
+    type: str
+    airtemp: float
+    processtemp: float
+    rotationalspeed: int
+    torque: float
+    toolwearinmins: int
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    mqtt_message_id: str = Field(default=None)
 
-def recreate_db():
-    # 删除现有表结构
+# # Create tables
+# def create_db_and_tables():
+#     SQLModel.metadata.create_all(engine)
+
+# Dependency for database session
+# def get_session():
+#     with Session(engine) as session:
+#         yield session
+
+# SessionDep = Annotated[Session, Depends(get_session)]
+
+
+
+# Initialize database with sample data
+config = {
+    "db_url": DATABASE_URL,
+    "initial_data_count": 100,
+    "time_interval": 5  # seconds
+}
+
+def generate_random_machine_data(num_machines):
+    """Generate random machine data."""
+    machines = []
+    start_time = datetime.now()
+    for i in range(num_machines):
+        machine = Machine(
+            machine_id=f"M-{random.randint(1, 7)}",
+            type=random.choice(["A", "B", "C"]),
+            airtemp=round(random.uniform(290, 310),2),
+            processtemp=round(random.uniform(300, 320)),
+            rotationalspeed=round(random.randint(1000, 2000)),
+            torque=round(random.uniform(20, 60)),
+            toolwearinmins=round(random.randint(0, 200)),
+            timestamp=start_time + timedelta(seconds=i * config["time_interval"])
+        )
+        machines.append(machine)
+    return machines
+
+def recreate_db(engine):
+    """Drop and recreate database tables."""
     SQLModel.metadata.drop_all(engine)
-    # 创建新的表结构
     SQLModel.metadata.create_all(engine)
 
-    
-def initialize_data():
-    recreate_db()  
+def initialize_data(config):
+    """Initialize database with sample data."""
+    engine = create_engine(config["db_url"], echo=True)
+    recreate_db(engine)
 
-    initial_sensors = [
-
-        Sensor(
-            machine_id="M",
-            ProductType="M",
-            airtemp=301.4,
-            processtemp=310.6,
-            Rotationalspeed=1459,
-            torque=46.9,
-            toolwearinmins=27,
-            timestamp="2023-12-14T00:00:00"
-        ),
-        Sensor(
-            machine_id="M",
-            ProductType="M",
-            airtemp=301.4,
-            processtemp=310.7,
-            Rotationalspeed=1692,
-            torque=32.3,
-            toolwearinmins=5,
-            timestamp="2023-12-14T00:00:05"
-        ),
-        Sensor(
-            machine_id="M",
-            ProductType="M",
-            airtemp=301.4,
-            processtemp=310.6,
-            Rotationalspeed=1630,
-            torque=30.3,
-            toolwearinmins=2,
-            timestamp="2023-12-14T00:00:10"
-        ),
-        Sensor(
-            machine_id="M",
-            ProductType="M",
-            airtemp=301.3,
-            processtemp=310.7,
-            Rotationalspeed=1532,
-            torque=40.7,
-            toolwearinmins=178,
-            timestamp="2023-12-14T00:00:15"
-        ),
-        Sensor(
-            machine_id="M",
-            ProductType="M",
-            airtemp=301.5,
-            processtemp=310.8,
-            Rotationalspeed=1628,
-            torque=36.4,
-            toolwearinmins=167,
-            timestamp="2023-12-14T00:00:20"
-        ),
-        Sensor(
-            machine_id="M",
-            ProductType="M",
-            airtemp=295.6,
-            processtemp=306.1,
-            Rotationalspeed=1669,
-            torque=29,
-            toolwearinmins=161,
-            timestamp="2023-12-14T00:00:25"
-        ),
-        # ... 继续添加剩余的 Sensor 对象 ...
-        Sensor(
-            machine_id="H",
-            ProductType="H",
-            airtemp=298.8,
-            processtemp=308.8,
-            Rotationalspeed=1306,
-            torque=54.5,
-            toolwearinmins=50,
-            timestamp="2023-12-14T00:00:25"
-        ),
-        Sensor(
-            machine_id="H",
-            ProductType="H",
-            airtemp=298.9,
-            processtemp=309.3,
-            Rotationalspeed=1375,
-            torque=42.7,
-            toolwearinmins=58,
-            timestamp="2023-12-14T00:00:30"
-        ),
-        # ... 继续添加剩余的 Sensor 对象 ...
-    ]
-
-
-
+    initial_machines = generate_random_machine_data(config["initial_data_count"])
 
     with Session(engine) as session:
-        # 插入数据
-        session.add_all(initial_sensors)
-        
+        session.add_all(initial_machines)
         session.commit()
 
     print("Initial data inserted successfully.")
 
 if __name__ == "__main__":
-    initialize_data()
+    initialize_data(config)

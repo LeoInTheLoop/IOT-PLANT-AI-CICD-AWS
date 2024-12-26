@@ -226,6 +226,11 @@ API URL 是否正确
     docker-compose up --build -d
     ```
 
+    ```bash
+    docker-compose down -v
+    docker-compose up --build
+    ```
+
     This command builds the Docker images for both the React frontend and the FastAPI backend, then starts the services defined in `docker-compose.yml`.
 
 3. **Access the services**:
