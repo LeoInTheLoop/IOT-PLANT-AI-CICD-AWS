@@ -4,6 +4,7 @@ from typing import Annotated
 from datetime import datetime
 import random
 from datetime import timedelta
+import pandas as pd
 
 # Database connection setup
 sqlite_file_name = "database.db"
@@ -79,5 +80,40 @@ def initialize_data(config):
 
     print("Initial data inserted successfully.")
 
+# ---------------------ye
+def import_realtime_data(csv_path):
+    """导入实时数据从CSV文件"""
+    try:
+        # 读取CSV文件
+        df = pd.read_csv(csv_path)
+        
+        # 创建Machine对象列表
+        machines = []
+        for _, row in df.iterrows():
+            machine = Machine(
+                machine_id=str(row['UDI']),  # 转换为字符串
+                type=row['Type'],
+                airtemp=float(row['Air temperature [K]']),
+                processtemp=float(row['Process temperature [K]']),
+                rotationalspeed=int(row['Rotational speed [rpm]']),
+                torque=float(row['Torque [Nm]']),
+                toolwearinmins=int(row['Tool wear [min]']),
+                timestamp=datetime.now()  # 使用当前时间
+            )
+            machines.append(machine)
+        
+        # 保存到数据库
+        with Session(engine) as session:
+            session.add_all(machines)
+            session.commit()
+            
+        print(f"成功导入 {len(machines)} 条实时数据")
+        
+    except Exception as e:
+        print(f"导入失败: {str(e)}")
+
 if __name__ == "__main__":
     initialize_data(config)
+    # --------------ye
+    csv_path = "../Data/realtime_data.csv"  
+    import_realtime_data(csv_path)
