@@ -8,7 +8,12 @@ import pandas as pd
 
 # Database connection setup
 sqlite_file_name = "database.db"
-DATABASE_URL = "postgresql://postgres:postgres@db:5432/Machine_data"
+# DATABASE_URL = "postgresql://postgres:postgres@db:5432/Machine_data"
+
+# -----------------ye
+DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/Realtime_data"
+
+
 engine = create_engine(DATABASE_URL, echo=True)
 
 # Define table
@@ -88,9 +93,9 @@ def import_realtime_data(csv_path):
         df = pd.read_csv(csv_path)
         
         # 创建Machine对象列表
-        machines = []
+        realtime_machines = []
         for _, row in df.iterrows():
-            machine = Machine(
+            realtime_machines = Machine(
                 machine_id=str(row['UDI']),  # 转换为字符串
                 type=row['Type'],
                 airtemp=float(row['Air temperature [K]']),
@@ -100,14 +105,14 @@ def import_realtime_data(csv_path):
                 toolwearinmins=int(row['Tool wear [min]']),
                 timestamp=datetime.now()  # 使用当前时间
             )
-            machines.append(machine)
+            realtime_machines.append(realtime_machines)
         
         # 保存到数据库
         with Session(engine) as session:
-            session.add_all(machines)
+            session.add_all(realtime_machines)
             session.commit()
             
-        print(f"成功导入 {len(machines)} 条实时数据")
+        print(f"成功导入 {len(realtime_machines)} 条实时数据")
         
     except Exception as e:
         print(f"导入失败: {str(e)}")
