@@ -11,7 +11,9 @@ sqlite_file_name = "database.db"
 # DATABASE_URL = "postgresql://postgres:postgres@db:5432/Machine_data"
 
 # -----------------ye
-DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/Realtime_data"
+# DATABASE_URL = "postgresql://postgres:postgres@postgres_db:5432/Realtime_data"
+DATABASE_URL = "postgresql://postgres:postgres@db:5432/Realtime_data"
+# DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/Realtime_data"
 
 
 engine = create_engine(DATABASE_URL, echo=True)
