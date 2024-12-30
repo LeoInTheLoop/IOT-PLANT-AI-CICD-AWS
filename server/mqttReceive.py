@@ -15,7 +15,7 @@ def on_message(client, userdata, msg):
             type=payload.get("ProductType"),
             airtemp=payload.get("airtemp"),
             processtemp=payload.get("processtemp"),
-            Rotationalspeed=payload.get("Rotationalspeed"),
+            rotationalspeed=payload.get("Rotationalspeed"),
             torque=payload.get("torque"),
             toolwearinmins=payload.get("toolwearinmins"),
             mqtt_message_id=msg.topic  # 记录 MQTT 主题
@@ -64,5 +64,10 @@ mosquitto_pub -h broker.hivemq.com -t "Machine/data" -m '{
     "torque": 45.0,
     "toolwearinmins": 50
 }'
+
+可用测试mqtt网站
+broker.hivemq.com  
+broker.emqx.io
+test.mosquitto.org
 
 '''
