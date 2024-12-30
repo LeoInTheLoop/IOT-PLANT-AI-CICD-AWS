@@ -1,9 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import MachineList from './pages/MachineList';
-import MachinePage from './pages/MachinePage';
-// import MachinePage from "./pages/MachinePage";
-// import MachineList from "./pages/MachineList.tsx";
+// import MachinePage from './pages/MachinePage';
+import MachineDetail from "./pages/MachineDetail";
 
 
 
@@ -14,7 +13,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<MachineList />} />
-          <Route path="/:machine_id/detail" element={<MachinePage />} />
+          <Route path="/:machine_id/detail" element={<MachineDetail />} />
 
         </Routes>
       </Router>
