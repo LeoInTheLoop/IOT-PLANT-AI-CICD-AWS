@@ -13,10 +13,19 @@ services:
     ports:
       - "5001:5001"
     volumes:
-      - ./server/trained_models:/app/trained_models
+      # - ./server/trained_models:/app/trained_models
+
+      # ------ye 挂载整个server目录
+      - ./server:/app 
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sensor_data
-    command: sh -c "python init_dbData.py && uvicorn main:app --host 0.0.0.0 --port 5001"
+    # --------------------------------------------------》
+      # - DATABASE_URL=postgresql://postgres:postgres@db:5432/Machine_data
+      # -------------ye
+      # - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/Realtime_data
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/Realtime_data
+    # command: sh -c "python init_dbData.py && uvicorn main:app --host 0.0.0.0 --port 5001"
+    # ----------------ye 添加 --reload
+    command: sh -c "python init_dbData.py && uvicorn main:app --host 0.0.0.0 --port 5001 --reload"  
 
     depends_on:
       db:
@@ -35,7 +44,9 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: Machine_data
+      # POSTGRES_DB: Machine_data
+      # ------ye
+      POSTGRES_DB: Realtime_data  # 确保数据库名称一致
       DB_RESET: true # 可选，用于触发数据库重建逻辑
     ports:
       - "5432:5432"

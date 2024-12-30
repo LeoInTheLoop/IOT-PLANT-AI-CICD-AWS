@@ -21,13 +21,14 @@ def get_maintenance_recommendation(status: str, data: MachineData) -> str:
 # Feature engineering for input data
 def prepare_features(data: MachineData):
     return np.array([
-        data.air_temperature,
-        data.process_temperature,
-        data.rotational_speed,
+        # ------------改了这里
+        data.airtemp,
+        data.processtemp,   
+        data.rotationalspeed,
         data.torque,
-        data.tool_wear,
+        data.toolwearinmins,
         1 if data.type == 'H' else (0.5 if data.type == 'M' else 0),  # Type encoding
-        data.process_temperature - data.air_temperature,  # temp_difference
-        data.rotational_speed * data.torque,  # power_estimate
-        data.tool_wear / 100  # normalized wear_rate
+        data.processtemp - data.airtemp,  # temp_difference
+        data.rotationalspeed * data.torque,  # power_estimate
+        data.toolwearinmins / 100  # normalized wear_rate
     ]).reshape(1, -1)

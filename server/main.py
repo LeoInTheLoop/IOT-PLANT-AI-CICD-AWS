@@ -56,6 +56,37 @@ async def predict_maintenance(data: MachineData):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+# ---------------------------------ye
+@app.post("/predict/test")
+async def predict_maintenance_test(data: MachineData):
+    """
+    基于传感器数据进行预测的测试接口
+    
+    Args:
+        data: 包含传感器数据的MachineData对象
+    """
+    try:
+        # 预处理输入数据
+        features = prepare_features(data)
+        
+        # 进行预测
+        ensemble_result = predict_ensemble(features)
+        status = ensemble_result["status"]
+        
+        # 返回预测结果
+        return {
+            "status": status,
+            "ensemble_probability": ensemble_result["ensemble_probability"],
+            "individual_predictions": ensemble_result["individual_predictions"],
+            "maintenance_needed": ensemble_result["maintenance_needed"],
+            "recommendation": get_maintenance_recommendation(status, data)
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Prediction error: {str(e)}"
+        )
 
 
 @app.post("/fakepredict")
