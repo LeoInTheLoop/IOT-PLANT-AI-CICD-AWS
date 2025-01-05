@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/MachineCard.css";
-import { on } from "events";
+// import { on } from "events";
 
 interface MachineCardProps {
   id: number;

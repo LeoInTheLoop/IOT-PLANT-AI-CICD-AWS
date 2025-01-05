@@ -109,11 +109,11 @@ async def predict_maintenance(data: MachineData):
         
         # Simulate processing time (e.g., 5 seconds delay)
         import time
-        time.sleep(5)
+        time.sleep(2)
 
+    
         # Randomly simulate prediction (replace with actual prediction logic)
-        np.random.seed(42)  # Set seed for reproducibility during debugging
-        status = np.random.choice(["normal", "failing"], p=[0.5, 0.5])
+        status = np.random.choice(["normal", "failing"], p=[0.8, 0.2])
 
         # Return the fake prediction result
         return {"status": status}
@@ -180,7 +180,7 @@ def read_Machines(
 
 @app.get("/Machines/{machine_id}", response_model=list[Machine])
 def read_machine(machine_id: str, session: SessionDep) -> list[Machine]:
-    machines = session.query(Machine).filter(Machine.machine_id == machine_id).order_by(Machine.timestamp.desc()).limit(10).all()
+    machines = session.query(Machine).filter(Machine.machine_id == machine_id).order_by(Machine.timestamp.asc()).limit(10).all()
     if not machines:
         raise HTTPException(status_code=404, detail="Machine not found")
     return machines

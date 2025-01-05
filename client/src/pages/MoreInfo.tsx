@@ -1,4 +1,4 @@
-import React from "react";
+
 import Details from "../components/MoreInfo/Details";
 import SideMenu from "../components/SideMenu/SideMenu";
 

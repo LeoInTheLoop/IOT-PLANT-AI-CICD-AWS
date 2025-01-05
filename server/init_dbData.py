@@ -6,6 +6,9 @@ import random
 from datetime import timedelta
 import pandas as pd
 
+
+#整体思路 先生成一个随机database ，然后每？秒钟 从 realtimedata 导入数据
+
 # Database connection setup
 sqlite_file_name = "database.db"
 # DATABASE_URL = "postgresql://postgres:postgres@db:5432/Machine_data"
@@ -87,6 +90,42 @@ def initialize_data(config):
 
     print("Initial data inserted successfully.")
 
+def generate_testmachine_data(num_machines, machine_id="m-test", machine_type="M"):
+    """生成特定测试机器的随机数据
+
+  
+    """
+    machines = []
+    start_time = datetime.now()
+    for i in range(num_machines):
+        machine = Machine(
+            machine_id=machine_id,
+            type=machine_type,
+            airtemp=round(random.uniform(290, 310), 2),
+            processtemp=round(random.uniform(300, 320), 2),
+            rotationalspeed=round(random.randint(1000, 2000)),
+            torque=round(random.uniform(20, 60), 2),
+            toolwearinmins=round(random.randint(0, 200)),
+            timestamp=start_time + timedelta(seconds=i * 5),
+        )
+        machines.append(machine)
+    return machines
+
+
+
+
+
+def insert_data(data):
+    """插入数据到数据库
+
+    Args:
+        data: 要插入的数据列表
+    """
+    with Session(engine) as session:
+        session.add_all(data)
+        session.commit()
+        print(f"Successfully inserted {len(data)} rows of data.")
+
 # ---------------------ye
 def import_realtime_data(csv_path):
     """导入实时数据从CSV文件"""
@@ -121,6 +160,10 @@ def import_realtime_data(csv_path):
 
 if __name__ == "__main__":
     initialize_data(config)
+
+    test_machine_data = generate_testmachine_data(10)
+    # 插入数据到数据库
+    insert_data(test_machine_data)
     # --------------ye
     csv_path = "../Data/realtime_data.csv"  
     import_realtime_data(csv_path)
