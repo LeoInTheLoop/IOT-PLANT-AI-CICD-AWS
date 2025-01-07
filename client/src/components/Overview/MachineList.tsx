@@ -106,7 +106,9 @@ const MachineList = () => {
               />
             ))
           ) : (
-            <p className="text-xl text-center p-4">No machines available.</p>
+            <p className="text-xl text-center p-4 text-[#173F51]">
+              No machines available.
+            </p>
           )}
         </div>
       </div>
