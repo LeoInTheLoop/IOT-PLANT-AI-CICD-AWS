@@ -113,7 +113,7 @@ async def predict_maintenance(data: MachineData):
 
     
         # Randomly simulate prediction (replace with actual prediction logic)
-        status = np.random.choice(["normal", "failing"], p=[0.8, 0.2])
+        status = np.random.choice(["normal", "warning"], p=[0.8, 0.2])
 
         # Return the fake prediction result
         return {"status": status}
