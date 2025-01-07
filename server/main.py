@@ -87,6 +87,19 @@ async def predict_maintenance_test(data: MachineData):
             status_code=500,
             detail=f"Prediction error: {str(e)}"
         )
+    
+
+# ---------------------ye.3
+# -------------ye.2
+@app.post("/Machines/predict-historical")
+async def predict_historical(data: MachineData):
+    try:
+        # 使用传入的具体数据进行预测
+        features = prepare_features(data)
+        ensemble_result = predict_ensemble(features)
+        return ensemble_result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/fakepredict")
