@@ -29,7 +29,6 @@ const MachineCard: React.FC<MachineCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const [predictionResult, setPredictionResult] = useState<string | null>(null);
   // console.log("MachineCard predictionResult:", predictionResult);
 
   useEffect(() => {

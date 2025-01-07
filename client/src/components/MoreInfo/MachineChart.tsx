@@ -21,7 +21,6 @@ function MachineChart() {
   const [error, setError] = useState<Error | null>(null);
   const [machineType, setMachineType] = useState<string | null>(null);
 
-
   // ---------ye.3
   // 添加 predictions state
   const [predictions, setPredictions] = useState<any[]>([]);
@@ -44,7 +43,6 @@ function MachineChart() {
           setMachineType(response.data[0].type); // 假设所有数据的 `type` 是相同的
         }
 
-
         // ---------------ye.3
         // 为每条历史数据获取预测结果
         const predictionPromises = formattedData.map(async (item: any) => {
@@ -56,36 +54,34 @@ function MachineChart() {
               processtemp: item.processtemp,
               rotationalspeed: item.rotationalspeed,
               torque: item.torque,
-              toolwearinmins: item.toolwearinmins
+              toolwearinmins: item.toolwearinmins,
             };
-            
+
             // 使用 POST 请求发送具体数据进行预测
             const predResponse = await axios.post(
-              'http://localhost:5001/Machines/predict-historical',
+              "http://localhost:5001/Machines/predict-historical",
               predictionData
             );
-            
+
             return {
               timestamp: item.timestamp,
-              prediction: predResponse.data
+              prediction: predResponse.data,
             };
           } catch (predError) {
-            console.error('预测请求失败:', predError);
+            console.error("预测请求失败:", predError);
             return {
               timestamp: item.timestamp,
-              prediction: { 
-                status: 'error', 
-                ensemble_probability: 0, 
-                recommendation: '获取预测失败' 
-              }
+              prediction: {
+                status: "error",
+                ensemble_probability: 0,
+                recommendation: "获取预测失败",
+              },
             };
           }
         });
 
         const predictionResults = await Promise.all(predictionPromises);
         setPredictions(predictionResults);
-
-
       } catch (error) {
         setError(error as Error);
       } finally {
@@ -99,21 +95,41 @@ function MachineChart() {
   return (
     <div>
       {isLoading ? (
-        <p className="text-xl text-center p-4">Loading data...</p>
+        <p className="text-xl text-center p-4 text-[#173F51]">
+          Loading data...
+        </p>
       ) : error ? (
-        <p className="text-xl text-center p-4">
+        <p className="text-xl text-center p-4 text-[#173F51]">
           Load data failed: {error.message}
         </p>
       ) : (
-        <div className="m-4 space-y-12 p-8">
+        <div className="m-4 space-y-12 p-8 w-[70%] mx-auto">
           <div className="text-center p-4">
-            <h2 className="text-2xl font-semibold">
-              Machine ID: {machine_id}
-            </h2>
-            <p className="text-lg text-gray-700">
-              Type: {machineType || "Unknown"}
+            <p className="text-left text-lg font-bold p-1 text-[#173F51] ">
+              Machine Type: {machineType || "Unknown"}
             </p>
           </div>
+
+          <div className="p-2 m-0 rounded-lg text-[#173F51] bg-[#d4eaf7] shadow-lg">
+            {/* prediction */}
+            <p className="text-left text-lg font-bold block p-2  ">
+              Latest prediction status
+            </p>
+            {predictions.length > 0 && (
+              <div className="p-4">
+                <p>Status: {predictions[0].prediction.status}</p>
+                <p>
+                  Possibility of failure:{" "}
+                  {(
+                    predictions[0].prediction.ensemble_probability * 100
+                  ).toFixed(2)}
+                  %
+                </p>
+                <p>Advice: {predictions[0].prediction.recommendation}</p>
+              </div>
+            )}
+          </div>
+
           <div className="w-full col-span-10 rounded bg-[#f5f4f1] shadow-md">
             <ResponsiveContainer width="100%" height={500} className="p-4">
               <LineChart data={machineData.data}>
@@ -217,27 +233,31 @@ function MachineChart() {
                 <YAxis domain={[0, 1]} />
                 <Tooltip />
                 <Legend />
-                <Bar 
-                  dataKey="prediction.ensemble_probability" 
-                  fill="#8884d8" 
-                  name="Predict probability of failure" 
+                <Bar
+                  dataKey="prediction.ensemble_probability"
+                  fill="#8884d8"
+                  name="Predict probability of failure"
                 />
               </BarChart>
             </ResponsiveContainer>
           </div>
           {/* 预测状态显示 */}
-          <div className="mt-4">
+          {/* <div className="mt-4">
             <h3>Latest prediction status</h3>
             {predictions.length > 0 && (
               <div>
                 <p>Status: {predictions[0].prediction.status}</p>
-                <p>Possibility of failure: {(predictions[0].prediction.ensemble_probability * 100).toFixed(2)}%</p>
+                <p>
+                  Possibility of failure:{" "}
+                  {(
+                    predictions[0].prediction.ensemble_probability * 100
+                  ).toFixed(2)}
+                  %
+                </p>
                 <p>Advice: {predictions[0].prediction.recommendation}</p>
               </div>
             )}
-          </div>
-
-
+          </div> */}
         </div>
       )}
     </div>
