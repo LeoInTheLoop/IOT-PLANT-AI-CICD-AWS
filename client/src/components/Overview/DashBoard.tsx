@@ -6,7 +6,6 @@ const DashBoard = () => {
     <div className="bg-[#fffefb] rounded-lg pb-10 shadow h-full min-h-screen">
       {" "}
       <TopBar title="Machine List" />
-      {/* change this to More Info / :machine_id */}'
       <MachineList />
     </div>
   );

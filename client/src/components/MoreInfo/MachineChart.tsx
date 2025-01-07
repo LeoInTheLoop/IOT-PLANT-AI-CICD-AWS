@@ -59,9 +59,9 @@ function MachineChart() {
       ) : (
         <div className="m-4 space-y-12 p-8">
           <div className="text-center p-4">
-            <h2 className="text-2xl font-semibold">
+            {/* <h2 className="text-2xl font-semibold">
               Machine ID: {machine_id}
-            </h2>
+            </h2> */}
             <p className="text-lg text-gray-700">
               Type: {machineType || "Unknown"}
             </p>
