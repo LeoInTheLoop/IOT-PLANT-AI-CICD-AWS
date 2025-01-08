@@ -17,8 +17,9 @@ interface Machine {
 const MachineList = () => {
   const [machines, setMachines] = useState<Machine[]>([]);
   const [counts, setCounts] = useState<number[]>([0, 0, 0]);
+  const [isPredictingAll, setIsPredictingAll] = useState(false);
 
-  // 检测是否在主页
+  // 获取机器数据
   useEffect(() => {
     const fetchMachines = async () => {
       try {
@@ -44,13 +45,6 @@ const MachineList = () => {
     };
 
     fetchMachines();
-    const interval = setInterval(() => {
-      if (isHomePage()) {
-        fetchMachines();
-      }
-    }, 100000);
-
-    return () => clearInterval(interval);
   }, []);
 
   // 更新分类计数
@@ -87,7 +81,7 @@ const MachineList = () => {
     };
   
     try {
-      const response = await fetch("http://localhost:5001/fakepredict", {
+      const response = await fetch("http://localhost:5001/Machines/predict-historical", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,30 +114,56 @@ const MachineList = () => {
   };
   
   
+  const handlePredictAll = async () => {
+    if (isPredictingAll) return;
+    setIsPredictingAll(true);
+
+    try {
+      
+      await Promise.all(
+        machines.map(async (machine) => {
+          if (!machine.predictionResult || machine.predictionResult === "error") {
+            await handlePredict(machine);
+          }
+        })
+      );
+    } catch (error) {
+      console.error("Error predicting all machines:", error);
+    } finally {
+      setIsPredictingAll(false);
+    }
+  };
+
   return (
-    <div className="flex flex-row w-full items-center justify-center">
+    <div className="flex flex-col w-full items-center justify-center">
       <div className="container mx-auto px-4">
-        <Filters
-          counts={{
-            total: counts[0],
-            normal: counts[1],
-            warning: counts[2],
-          }}
-        />
+        <div className="flex justify-between items-center">
+          <Filters
+            counts={{
+              total: counts[0],
+              normal: counts[1],
+              warning: counts[2],
+            }}
+          />
+          <button
+            onClick={handlePredictAll}
+            disabled={isPredictingAll}
+            className={`px-4 py-2 rounded-md text-white ${
+              isPredictingAll 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-[#173F51] hover:bg-[#0F2A36]'
+            }`}
+          >
+            {isPredictingAll ? 'Predicting...' : 'Predict All'}
+          </button>
+        </div>
+        
         <div className="p-4">
           {machines.length > 0 ? (
             machines.map((machine) => (
               <MachineCard
                 key={machine.id}
-                id={machine.id}
-                machine_id={machine.machine_id}
-                type={machine.type}
-                airtemp={machine.airtemp}
-                processtemp={machine.processtemp}
-                rotationalspeed={machine.rotationalspeed}
-                torque={machine.torque}
-                toolwearinmins={machine.toolwearinmins}
-                predictionResult={machine.predictionResult}
+                {...machine}
                 onPredict={() => handlePredict(machine)}
               />
             ))
