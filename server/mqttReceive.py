@@ -3,13 +3,13 @@ import json
 from db import get_session, Machine, engine
 from sqlmodel import Session
 
-# MQTT 回调函数
+
 def on_message(client, userdata, msg):
     try:
-        # 解码接收到的消息
+    
         payload = json.loads(msg.payload.decode('utf-8'))
         
-        # 创建一个 Machine 实例
+       
         new_Machine_data = Machine(
             machine_id=payload.get("machine_id"),
             type=payload.get("ProductType"),
@@ -21,7 +21,8 @@ def on_message(client, userdata, msg):
             mqtt_message_id=msg.topic  # 记录 MQTT 主题
         )
         
-        # 将数据存储到数据库
+        # save data to database
+        # 保存数据到数据库
         with Session(engine) as session:
             session.add(new_Machine_data)
             session.commit()
@@ -30,25 +31,24 @@ def on_message(client, userdata, msg):
     except Exception as e:
         print(f"Error processing MQTT message: {e}")
 
-    # MQTT 连接成功的回调函数
+    # show connect status
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker successfully.")
     else:
         print("Failed to connect to MQTT Broker, return code %d\n", rc)
 
-# MQTT 客户端设置
+# MQTT client setup
 def start_mqtt_client():
     client = mqtt.Client()
     client.on_message = on_message
     
-    # 配置 MQTT Broker 地址和端口
+    # configure mqtt broker address and port
     client.connect("broker.hivemq.com", 1883, 60)
     client.on_connect = on_connect 
-    # 订阅主题
+    # subscribe topic
     client.subscribe("Machine/data")
     
-    # 开始 MQTT 客户端循环
     client.loop_start()
 
 
