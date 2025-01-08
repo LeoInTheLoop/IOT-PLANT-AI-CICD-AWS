@@ -12,6 +12,7 @@ from sqlmodel import Session, select
 from sqlalchemy import func, and_
 from sqlalchemy.sql import text
 from mqttReceive import start_mqtt_client
+from init_dbData import init_db  # 添加导入
 
 
 
@@ -28,9 +29,24 @@ app.add_middleware(
 )
 
 @app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
-    start_mqtt_client()
+async def on_startup():
+    try:
+        # 1. 首先创建数据库表
+        create_db_and_tables()
+        print("Database tables created successfully")
+        
+        # 2. 初始化随机数据
+        if not init_db():
+            raise Exception("Database initialization failed")
+        print("Database initialized with sample data")
+        
+        # 3. 启动 MQTT 客户端
+        start_mqtt_client()
+        print("MQTT client started")
+        
+    except Exception as e:
+        print(f"Startup error: {str(e)}")
+        raise Exception(f"Application startup failed: {str(e)}")
 
 @app.get("/health")
 def health_check():

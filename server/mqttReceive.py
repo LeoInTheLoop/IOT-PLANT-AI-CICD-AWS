@@ -56,7 +56,7 @@ def start_mqtt_client():
 # test method
 
 mosquitto_pub -h broker.hivemq.com -t "Machine/data" -m '{
-    "machine_id": "lll",
+    "machine_id": "jan7",
     "ProductType": "A",
     "airtemp": 25.0,
     "processtemp": 30.5,

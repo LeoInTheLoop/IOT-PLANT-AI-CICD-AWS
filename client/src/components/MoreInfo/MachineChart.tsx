@@ -16,14 +16,11 @@ import {
 
 function MachineChart() {
   const { machine_id } = useParams();
-  const [machineData, setMachineData] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [machineType, setMachineType] = useState<string | null>(null);
-
-  // ---------ye.3
-  // 添加 predictions state
   const [predictions, setPredictions] = useState<any[]>([]);
+  const [machineData, setMachineData] = useState<any>({ data: [] });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -241,23 +238,6 @@ function MachineChart() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          {/* 预测状态显示 */}
-          {/* <div className="mt-4">
-            <h3>Latest prediction status</h3>
-            {predictions.length > 0 && (
-              <div>
-                <p>Status: {predictions[0].prediction.status}</p>
-                <p>
-                  Possibility of failure:{" "}
-                  {(
-                    predictions[0].prediction.ensemble_probability * 100
-                  ).toFixed(2)}
-                  %
-                </p>
-                <p>Advice: {predictions[0].prediction.recommendation}</p>
-              </div>
-            )}
-          </div> */}
         </div>
       )}
     </div>

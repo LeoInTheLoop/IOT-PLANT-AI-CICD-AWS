@@ -1,32 +1,18 @@
 from sqlmodel import Field, Session, SQLModel, create_engine
+from fastapi import Depends, FastAPI, HTTPException
 
-from typing import Annotated
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
-from datetime import timedelta
 import pandas as pd
+from db import Machine, DATABASE_URL  # Import Machine model from db.py
 
 
-sqlite_file_name = "database.db"
 
 DATABASE_URL = "postgresql://postgres:postgres@db:5432/Realtime_data"
 
 
 
 engine = create_engine(DATABASE_URL, echo=True)
-
-# Define table
-class Machine(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
-    machine_id: str = Field(default="unknown")
-    type: str
-    airtemp: float
-    processtemp: float
-    rotationalspeed: int
-    torque: float
-    toolwearinmins: int
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
-    mqtt_message_id: str = Field(default=None)
 
 
 
@@ -43,10 +29,13 @@ def generate_random_machine_data(num_machines):
     machines = []
     start_time = datetime.now()
     for i in range(num_machines):
+        machine_type = random.choice(["H", "M", "L"])
+        machine_id = machine_type + str(random.randint(1, 2))
+
         machine = Machine(
-            
-            type=random.choice(["H", "M", "L"]),
-            machine_id=type + str(random.randint(1, 2)),
+           
+            type=machine_type,
+            machine_id = machine_id,
             airtemp=round(random.uniform(290, 310),2),
             processtemp=round(random.uniform(300, 320)),
             rotationalspeed=round(random.randint(1000, 2000)),
@@ -139,8 +128,18 @@ def insert_data(data):
 #     except Exception as e:
 #         print(f"导入失败: {str(e)}")
 
-if __name__ == "__main__":
-    initialize_data(config)
+# 修改主函数，使其可以被其他文件调用
+def init_db():
+    try:
+        initialize_data(config)
+        # test_machine_data = generate_testmachine_data(10)
+        # insert_data(test_machine_data)
+        # csv_path = "../Data/realtime_data.csv"  
+        # import_realtime_data(csv_path)
+        return True
+    except Exception as e:
+        print(f"Database initialization failed: {str(e)}")
+        return False
 
-    csv_path = "../Data/realtime_data.csv"  
-    # import_realtime_data(csv_path)
+if __name__ == "__main__":
+    init_db()

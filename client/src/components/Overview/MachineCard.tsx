@@ -31,25 +31,19 @@ const MachineCard: React.FC<MachineCardProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   // console.log("MachineCard predictionResult:", predictionResult);
 
-  useEffect(() => {
-    const fetchPrediction = async () => {
-      if (onPredict) {
-        setIsLoading(true);
-        try {
-          const result = await onPredict();
-          console.log("Prediction result:", result); // Debug log
-          // setPredictionResult(result);
-        } catch (error) {
-          console.error("Prediction failed:", error);
-          // setPredictionResult("Prediction failed");
-        } finally {
-          setIsLoading(false);
-        }
+  const handlePredictClick = async () => {
+    if (onPredict && !isLoading) {
+      setIsLoading(true);
+      try {
+        const result = await onPredict();
+        console.log("Prediction result:", result);
+      } catch (error) {
+        console.error("Prediction failed:", error);
+      } finally {
+        setIsLoading(false);
       }
-    };
-
-    fetchPrediction();
-  }, [onPredict]);
+    }
+  };
 
   return (
     <div className={`card-container ${isExpanded ? "expanded" : ""}`}>
@@ -64,33 +58,19 @@ const MachineCard: React.FC<MachineCardProps> = ({
         </div>
 
         <div className="card-status">
-          {isLoading ? (
-            predictionResult && (
-              <p
-                className={`status-indicator ${
-                  predictionResult === "normal" ? "on" : "off"
-                }`}
-              >
-                {predictionResult}
-              </p>
-            )
+          {predictionResult ? (
+            <p className={`status-indicator ${predictionResult === "normal" ? "on" : "off"}`}>
+              {predictionResult}
+            </p>
           ) : (
-            <p className="status-indicator predicting">Predicting</p>
+            <button 
+              onClick={handlePredictClick}
+              disabled={isLoading}
+              className="predict-button"
+            >
+              {isLoading ? "Predicting..." : "Predict"}
+            </button>
           )}
-
-          {/* {isLoading ? (
-              <p className="status-indicator predicting">Predicting</p>
-            ) : (
-              predictionResult && (
-                <p
-                  className={`status-indicator ${
-                    predictionResult === "normal" ? "on" : "off"
-                  }`}
-                >
-                  {predictionResult}
-                </p>
-              )
-            )} */}
         </div>
       </div>
 
