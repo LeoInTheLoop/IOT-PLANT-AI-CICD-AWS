@@ -52,57 +52,57 @@ async def on_startup():
 def health_check():
     return {"status": "healthy"}
 
-@app.post("/predict")
-async def predict_maintenance(data: MachineData):
-    try:
-        # 预处理输入数据
-        features = prepare_features(data)
+# @app.post("/predict")
+# async def predict_maintenance(data: MachineData):
+#     try:
+#         # 预处理输入数据
+#         features = prepare_features(data)
 
-        # 调用 ai.py 中的预测函数
-        ensemble_result = predict_ensemble(features)
-        status = ensemble_result["status"]
+#         # 调用 ai.py 中的预测函数
+#         ensemble_result = predict_ensemble(features)
+#         status = ensemble_result["status"]
 
-        # 构建返回结果
-        return {
-            "status": status,
-            "ensemble_probability": ensemble_result["ensemble_probability"],
-            "individual_predictions": ensemble_result["individual_predictions"],
-            "maintenance_needed": ensemble_result["maintenance_needed"],
-            "recommendation": get_maintenance_recommendation(status, data),
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+#         # 构建返回结果
+#         return {
+#             "status": status,
+#             "ensemble_probability": ensemble_result["ensemble_probability"],
+#             "individual_predictions": ensemble_result["individual_predictions"],
+#             "maintenance_needed": ensemble_result["maintenance_needed"],
+#             "recommendation": get_maintenance_recommendation(status, data),
+#         }
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
     
 # ---------------------------------ye
-@app.post("/predict/test")
-async def predict_maintenance_test(data: MachineData):
-    """
-    基于传感器数据进行预测的测试接口
+# @app.post("/predict/test")
+# async def predict_maintenance_test(data: MachineData):
+#     """
+#     基于传感器数据进行预测的测试接口
     
-    Args:
-        data: 包含传感器数据的MachineData对象
-    """
-    try:
-        # 预处理输入数据
-        features = prepare_features(data)
+#     Args:
+#         data: 包含传感器数据的MachineData对象
+#     """
+#     try:
+#         # 预处理输入数据
+#         features = prepare_features(data)
         
-        # 进行预测
-        ensemble_result = predict_ensemble(features)
-        status = ensemble_result["status"]
+#         # 进行预测
+#         ensemble_result = predict_ensemble(features)
+#         status = ensemble_result["status"]
         
-        # 返回预测结果
-        return {
-            "status": status,
-            "ensemble_probability": ensemble_result["ensemble_probability"],
-            "individual_predictions": ensemble_result["individual_predictions"],
-            "maintenance_needed": ensemble_result["maintenance_needed"],
-            "recommendation": get_maintenance_recommendation(status, data)
-        }
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Prediction error: {str(e)}"
-        )
+#         # 返回预测结果
+#         return {
+#             "status": status,
+#             "ensemble_probability": ensemble_result["ensemble_probability"],
+#             "individual_predictions": ensemble_result["individual_predictions"],
+#             "maintenance_needed": ensemble_result["maintenance_needed"],
+#             "recommendation": get_maintenance_recommendation(status, data)
+#         }
+#     except Exception as e:
+#         raise HTTPException(
+#             status_code=500,
+#             detail=f"Prediction error: {str(e)}"
+#         )
     
 
 # ---------------------ye.3
@@ -118,37 +118,37 @@ async def predict_historical(data: MachineData):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/fakepredict")
-async def predict_maintenance(data: MachineData):
-    """
-    Performs a fake prediction based on data completeness and random chance.
-    """
-    print(data.dict()) 
-    try:
-        # Validate data completeness
-        required_fields = ["type","airtemp", "processtemp", "rotationalspeed", "torque", "toolwearinmins"]
-        missing_fields = [field for field in required_fields if not hasattr(data, field)]
-        if missing_fields:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Missing required sensor data fields: {', '.join(missing_fields)}",
-            )
+# @app.post("/fakepredict")
+# async def predict_maintenance(data: MachineData):
+#     """
+#     Performs a fake prediction based on data completeness and random chance.
+#     """
+#     print(data.dict()) 
+#     try:
+#         # Validate data completeness
+#         required_fields = ["type","airtemp", "processtemp", "rotationalspeed", "torque", "toolwearinmins"]
+#         missing_fields = [field for field in required_fields if not hasattr(data, field)]
+#         if missing_fields:
+#             raise HTTPException(
+#                 status_code=400,
+#                 detail=f"Missing required sensor data fields: {', '.join(missing_fields)}",
+#             )
         
-        print("Fake prediction running...")  # Replace console.log with Python's print
+#         print("Fake prediction running...")  # Replace console.log with Python's print
         
-        # Simulate processing time (e.g., 5 seconds delay)
-        import time
-        time.sleep(2)
+#         # Simulate processing time (e.g., 5 seconds delay)
+#         import time
+#         time.sleep(2)
 
     
-        # Randomly simulate prediction (replace with actual prediction logic)
-        status = np.random.choice(["normal", "warning"], p=[0.8, 0.2])
+#         # Randomly simulate prediction (replace with actual prediction logic)
+#         status = np.random.choice(["normal", "warning"], p=[0.8, 0.2])
 
-        # Return the fake prediction result
-        return {"status": status}
-    except Exception as e:
-        # Catch any exceptions and raise an HTTPException with details
-        raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
+#         # Return the fake prediction result
+#         return {"status": status}
+#     except Exception as e:
+#         # Catch any exceptions and raise an HTTPException with details
+#         raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
 
 @app.get("/machines/latest")
 def get_latest_machine_data(session: SessionDep) -> list[Machine]:
@@ -255,7 +255,7 @@ def delete_machine_by_id(id: int, session: SessionDep):
         raise HTTPException(status_code=404, detail="Machine not found")
     session.delete(machine)
     session.commit()
-    return {"ok": True}
+    return {"ok": True} 
 
 
 @app.get("/test-db")
