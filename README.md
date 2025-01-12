@@ -7,10 +7,10 @@ This project implements a predictive maintenance system for industrial IoT (IIoT
 ## How to run the system
 
 ```bash
-docker-compose down -v
+docker-compose down -v // no necessary
 docker-compose up --build
-cd client
-npm run dev
+cd client // Move to the client folder
+npm run dev // Open the default front-end URL
 ```
 
 ---
