@@ -1,49 +1,180 @@
+# run system
 docker-compose down -v                                    
 docker-compose up --build
 
 
 # 待办事项列表
 
-## 进行中
-1. **后端集成MQTT**
-   - 后端加入MQTT支持。 （孔
-
-## 想法
+# Predictive Maintenance for Industrial IoT Systems
 
 
-1. **前端数据获取**
-   - 实现前端通过GET请求`/machines`获取数据，并展示在`machinelist`页面。
-   - 实现前端通过GET请求`/machines/:id`获取数据，并展示在`detail`页面。
+This project implements a predictive maintenance system for industrial IoT (IIoT) applications. The system uses machine learning models to predict equipment failures, provides actionable insights, and visualizes the results through a responsive web platform.
 
-2. **后端集成MQTT**
-   - 后端加入MQTT支持。
+---
 
-3. **MQTT与数据库集成**
-   - 实现MQTT接收数据并写入SQL数据库。
+## Table of Contents
 
-4. **后端接口开发**
-   - 后端开发接口，接收POST请求，并返回预测结果（暂时使用POST代替MQTT接收数据）。
+1. [Technologies Used](#technologies-used)
+2. [Project Structure](#project-structure)
+3. [Deployment Guide](#deployment-guide)
+4. [Frequently Asked Questions](#Frequently-Asked-Questions)
 
-5. **前端展示ML结果**
-   - 前端接收机器学习预测结果，并进行展示。
+---
 
-6. **数据库数据存储**
-   - SQL数据库存储相关数据。
+## Technologies Used
 
-7. **前端详情页图表展示**
-   - 设计并实现前端`detail`页面的折线图展示。
+### Backend
 
+- Python
+- Flask/FastAPI
+- PostgreSQL
+- MQTT
+- Docker
 
+### Frontend
 
-## 完成
-    - 后端创建SQL数据库，并实现增、改、查、删功能（孔）
-    -  前端网页路径调整：已修改 machinelist 和 machinepage 路径。优化页面布局。（林）
+- React
+- Recharts
+- Tailwind CSS
 
+### Machine learning models
 
-***
+- Random Forest
 
+---
 
-# IoT 预测性维护项目部署指南
+## Project Structure
+
+### Frontend (Client)
+
+```
+client/
+├── src/
+│   ├── assets/
+│   │   ├── nav-icon.png
+│   ├── components/
+│   │   ├── Layout/            # The components of page layout
+│   │   │   ├── MainLayout.tsx
+│   │   ├── MoreInfo/          # The components of Details (More info) page
+│   │   │   ├── Details.tsx
+│   │   │   ├── MachineChart.tsx
+│   │   ├── Navigation/        # The components of top-title
+│   │   │   ├── TopBar.tsx
+│   │   ├── Overview/          # The components of Dashboard (Overview) page
+│   │   │   ├── DashBoard.tsx
+│   │   │   ├── Filters.tsx
+│   │   │   ├── MachineCard.tsx
+│   │   │   ├── MachineList.tsx
+│   │   ├── SideMenu/         # The components of side-menu
+│   │   │   ├── Selection.tsx
+│   │   │   ├── SideMenu.tsx
+│   ├── pages/
+│   │   ├── MoreInfo.tsx       # Details (More information) page
+│   │   ├── Overview.tsx       # Dashboard (Overview) page
+│   ├── styles/                # CSS and style files
+│   │   ├── index.css
+│   │   ├── MachineCard.css
+│   ├── App.tsx                # Entry point of the React app
+│   ├── main.tsx               # React DOM renderer
+├── Dockerfile                 # Frontend Docker configuration
+└── docker-compose.yml         # Docker Compose configuration
+```
+
+### Backend (Server)
+
+```
+server/
+├── trained_models/        # Machine learning models
+│   ├── decision_tree_model.joblib
+│   ├── neural_network_model.keras
+│   ├── random_forest_model_optimized.joblib
+│   ├── tensorflow_nn_model.keras
+├── main.py                # FastAPI application
+├── db.py                  # Database-related scripts
+├── init_dbData.py         # Data initialization scripts
+├── ai.py                  # Model-related logic
+├── mqttReceive.py         # MQTT data handling
+├── Dockerfile             # Backend Docker configuration
+├── requirements.txt       # Python dependencies
+└── docker-compose.yml     # Docker Compose configuration
+```
+
+---
+
+## Deployment Guide
+
+### Prerequisites
+
+1. Docker and Docker Compose installed on the server.
+2. Python 3.8 or later installed (for standalone backend testing).
+3. Node.js 16.x or later installed (for standalone frontend testing).
+
+### Method 1: Using Docker
+
+1. Start the project:
+   ```bash
+   docker-compose up --build -d
+   ```
+2. Access the application:
+   - Frontend interface: [http://localhost:3000](http://localhost:3000)
+   - Backend API:[http://localhost:5001](http://localhost:5001)
+3. Stop the project:
+   ```bash
+   docker-compose down
+   ```
+
+### Method 2: Local Development Environment
+
+1. Install frontend dependencies:
+   ```bash
+   cd client
+   npm install
+   ```
+2. Run the frontend development server：
+   ```bash
+   npm run dev
+   ```
+3. Start the backend service in a new terminal：
+   ```bash
+   cd server
+   docker-compose up --build -d
+   ```
+
+---
+
+## Frequently Asked Questions
+
+1. Docker container failed to start
+
+   - Check:
+     - Ensure Docker Desktop is running.
+     - Verify that ports 3000 and 5001 are not already in use.
+     - View logs using:`docker-compose logs`
+
+2. Model file errors
+
+   - Ensure that:
+     - `server/trained_models/` directory contains all required model files:
+       - `tensorflow_nn_model.keras`
+       - `decision_tree_model.joblib`
+       - `random_forest_model_optimized.joblib`
+
+3. Frontend development server failed to start
+
+   - Try the following steps:
+     - Remove `node_modules`：`rm -rf node_modules`
+     - Reinstall dependencies: `npm install`
+     - Clear the cache: `npm cache clean --force`
+
+4. API connection failed
+   - Check:
+     - Ensure the backend service is running: `docker ps`
+     - Verify the API URL is correct.
+     - View backend logs:`docker logs project1-server-1`
+
+---
+
+--------------------------分界线---------------------------------------------------------------
 
 ## 目录
 
@@ -89,7 +220,7 @@ docker-compose up --build
 
 1. 克隆项目：
    ```bash
-   git clone https://github.com/yebeike/project1.git 
+   git clone https://github.com/yebeike/project1.git
    cd project1
    ```
 
@@ -103,7 +234,7 @@ docker-compose up --build
    ```
 2. 访问应用：
    - 前端界面：[http://localhost:3000](http://localhost:3000)
-   - 后端API：[http://localhost:5001](http://localhost:5001)
+   - 后端 API：[http://localhost:5001](http://localhost:5001)
 3. 停止项目：
    ```bash
    docker-compose down
@@ -175,12 +306,14 @@ project1/
 ## 常见问题
 
 1. Docker 容器启动失败
+
    - 检查：
      - Docker Desktop 是否运行
      - 端口 3000 和 5001 是否被占用
      - 查看日志：`docker-compose logs`
 
 2. 模型文件错误
+
    - 确保：
      - `server/trained_models/` 目录包含所有必要的模型文件：
        - `tensorflow_nn_model.keras`
@@ -188,127 +321,14 @@ project1/
        - `random_forest_model_optimized.joblib`
 
 3. 前端开发服务器启动失败
+
    - 尝试：
      - 删除 `node_modules`：`rm -rf node_modules`
      - 重新安装：`npm install`
      - 清除缓存：`npm cache clean --force`
 
 4. API 连接失败
-检查：
-后端服务是否运行： docker ps
-API URL 是否正确
-查看后端日志： docker logs project1-server-1
-
-
-
-## 📁 Project Structure
-
--   **`frontend/`** - The React frontend app, where users can draw digits and have fun! 🎨
--   **`models/`** - TensorFlow model files live here! 🧠
--   **`server/`** - FastAPI application folder, the brain of our backend! 🖥️
--   **`docker-compose.yml`** - Docker Compose configuration to build and run both frontend and backend services. 📦
-
-## 🚀 Getting Started
-
-### ✅ Prerequisites
-
--   **Docker** - To build and run the API in a container. 🐋
--   **Node.js and npm** - For building the frontend application. 📦
-
-### 🛠️ Building and Running the Application with Docker Compose
-
-1. **Clone the repository**:
-
-    ```bash
-    git clone https://github.com/AhmedSobhy01/digit-classifier.git
-    cd digit-classifier
-    ```
-
-2. **Build and start the services**:
-
-    ```bash
-    docker-compose up --build -d
-    ```
-
-    ```bash
-    docker-compose down -v
-    docker-compose up --build
-    ```
-
-    This command builds the Docker images for both the React frontend and the FastAPI backend, then starts the services defined in `docker-compose.yml`.
-
-3. **Access the services**:
-
-    - **React Frontend**: Open `http://localhost:3000` in your browser to use the frontend app.
-    - **FastAPI Backend**: The backend API will be accessible at `http://localhost:5001`.
-
-### 🔗 API Endpoints
-
--   **POST /predict**: Predict the digit from an uploaded image file. 📸
-
-    #### Example Request
-
-    ```bash
-    curl -X POST "http://localhost:5000/predict" -H "Content-Type: multipart/form-data" -F "file=@your_image_file.png"
-    ```
-
-    -   **`file`**: The image file you want to classify. 🎯
-
-    #### Example Response
-
-    ```json
-    {
-        "message": "Prediction successful",
-        "prediction": 1,
-        "probabilities": [2.6359641196904704e-5, 0.7292985916137695, 3.460873995209113e-5, 0.10600192844867706, 0.005066428333520889, 0.053292419761419296, 3.709441443788819e-6, 0.002449796535074711, 0.005420663394033909, 0.09840560704469681]
-    }
-    ```
-
-## 🎨 Building the Frontend Web Application (Optional)
-
-If you prefer to build and run the React frontend without Docker, follow these steps:
-
-1. **Navigate to the `frontend` directory**:
-
-    ```bash
-    cd frontend
-    ```
-
-2. **Install the necessary dependencies**:
-
-    ```bash
-    npm install
-    ```
-
-3. **Build the frontend application**:
-
-    ```bash
-    npm run build
-    ```
-
-4. **Serve the application locally**:
-
-    ```bash
-    npm start
-    ```
-
-    The frontend app will be available at `http://localhost:3000` (port may vary).
-
-
-
-## 🧠 Model Architecture
-
-The neural network model used is a simple yet powerful one:
-
--   **Input Layer**: 784 neurons (28x28 pixels, flattened)
--   **Hidden Dropout Layer**
--   **Hidden Dense Layer**: 1 fully connected layer with ReLU activation
--   **Output Layer**: 10 neurons (one for each digit class) with softmax activation
-
-## 🎓 Model Training
-
-The model was trained using the MNIST dataset. Want to retrain it? Use the `models/tensorflow_nn_model.py` script.
-
-## 📜 License
-
-This project is licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file.
+   检查：
+   后端服务是否运行： docker ps
+   API URL 是否正确
+   查看后端日志： docker logs project1-server-1
