@@ -24,27 +24,34 @@ function MachineChart() {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Initialize loading state
       setIsLoading(true);
+      // Clear any existing errors
       setError(null);
 
       try {
         const response = await axios.get(
           `http://localhost:5001/Machines/${machine_id}`
         );
-        
+
         // Sort data by timestamp in ascending order
         const formattedData = response.data
-          .sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+          .sort(
+            (a: any, b: any) =>
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          )
           .map((item: any) => ({
             ...item,
             timestamp: new Date(item.timestamp).toLocaleString(),
           }));
-          
+
+        // Update machine data state
         setMachineData({ data: formattedData });
         if (response.data.length > 0) {
-          setMachineType(response.data[0].type);
+          setMachineType(response.data[0].type); // Update machine type state
         }
 
+        // Predict data
         const predictionPromises = formattedData.map(async (item: any) => {
           try {
             const predictionData = {

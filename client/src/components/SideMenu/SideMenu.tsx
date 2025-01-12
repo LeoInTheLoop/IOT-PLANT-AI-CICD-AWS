@@ -1,11 +1,14 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Selection from "./Selection";
 import dashboardIcon from "../../assets/nav-icon.png";
 
 const SideMenu = () => {
   return (
     <div className="p-3 sticky top-4">
-      <Link to="/" className="border-b pb-4 border-stone-300 flex relative w-full block items-center no-underline">
+      <Link
+        to="/"
+        className="border-b pb-4 border-stone-300 flex relative w-full block items-center no-underline"
+      >
         <img
           src={dashboardIcon}
           alt="Dashboard Icon"

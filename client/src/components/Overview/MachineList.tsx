@@ -19,7 +19,7 @@ const MachineList = () => {
   const [counts, setCounts] = useState<number[]>([0, 0, 0]);
   const [isPredictingAll, setIsPredictingAll] = useState(false);
 
-  // 获取机器数据
+  // Get machine data
   useEffect(() => {
     const fetchMachines = async () => {
       try {
@@ -27,12 +27,15 @@ const MachineList = () => {
         const data = await response.json();
         console.log("Fetched machines:", data);
 
-        // 使用函数式更新，避免依赖 machines
-        setMachines(prevMachines => {
+        // Update status only when data changes
+        setMachines((prevMachines) => {
           if (
             data.length !== prevMachines.length ||
             data.some((newMachine: Machine, index: number) => {
-              return JSON.stringify(newMachine) !== JSON.stringify(prevMachines[index]);
+              return (
+                JSON.stringify(newMachine) !==
+                JSON.stringify(prevMachines[index])
+              );
             })
           ) {
             return data;
@@ -47,7 +50,7 @@ const MachineList = () => {
     fetchMachines();
   }, []);
 
-  // 更新分类计数
+  // Update classification counts
   useEffect(() => {
     setCounts([
       machines.length,
@@ -56,21 +59,21 @@ const MachineList = () => {
     ]);
   }, [machines]);
 
-  // 执行预测
+  // Implement predicting
   const handlePredict = async (machine: Machine): Promise<string> => {
-    // 检查是否已有预测请求正在进行
+    // Check if a forecast request is already in progress
     if (machine.predictionResult === "loading") {
       console.log(`Prediction already in progress for machine ${machine.id}`);
       return "Prediction already in progress";
     }
-  
-    // 更新当前机器状态为 "loading"
+
+    // Update the status to "loading"
     setMachines((prev) =>
       prev.map((m) =>
         m.id === machine.id ? { ...m, predictionResult: "loading" } : m
       )
     );
-  
+
     const payload = {
       type: machine.type,
       airtemp: machine.airtemp,
@@ -79,18 +82,21 @@ const MachineList = () => {
       torque: machine.torque,
       toolwearinmins: machine.toolwearinmins,
     };
-  
+
     try {
-      const response = await fetch("http://localhost:5001/Machines/predict-historical", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        "http://localhost:5001/Machines/predict-historical",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
       const info = await response.json();
-  
-      // 更新预测结果
+
+      // Update the predictive status
       setMachines((prev) =>
         prev.map((m) =>
           m.id === machine.id
@@ -102,8 +108,8 @@ const MachineList = () => {
       return info.status || "Prediction complete";
     } catch (error) {
       console.error("Error sending prediction request:", error);
-  
-      // 预测失败时重置状态
+
+      // Reset state when prediction fails
       setMachines((prev) =>
         prev.map((m) =>
           m.id === machine.id ? { ...m, predictionResult: undefined } : m
@@ -112,17 +118,19 @@ const MachineList = () => {
       return "Error fetching prediction";
     }
   };
-  
-  
+
+  // Predict all machines
   const handlePredictAll = async () => {
     if (isPredictingAll) return;
     setIsPredictingAll(true);
 
     try {
-      
       await Promise.all(
         machines.map(async (machine) => {
-          if (!machine.predictionResult || machine.predictionResult === "error") {
+          if (
+            !machine.predictionResult ||
+            machine.predictionResult === "error"
+          ) {
             await handlePredict(machine);
           }
         })
@@ -149,15 +157,15 @@ const MachineList = () => {
             onClick={handlePredictAll}
             disabled={isPredictingAll}
             className={`px-4 py-2 rounded-md text-white ${
-              isPredictingAll 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-[#173F51] hover:bg-[#0F2A36]'
+              isPredictingAll
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#173F51] hover:bg-[#0F2A36]"
             }`}
           >
-            {isPredictingAll ? 'Predicting...' : 'Predict All'}
+            {isPredictingAll ? "Predicting..." : "Predict All"}
           </button>
         </div>
-        
+
         <div className="p-4">
           {machines.length > 0 ? (
             machines.map((machine) => (

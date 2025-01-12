@@ -12,6 +12,7 @@ const Route = ({
   return (
     <div>
       <button
+        // the style when selected is true
         className={`block w-full  items-center px-6 py-6 text-g font-bold text-[#173F51]rounded-lg ${
           selected ? "bg-[#d4eaf7] text-[#173F51]" : "text-[#173F51]"
         }`}
@@ -27,6 +28,8 @@ const Selection = () => {
   // const [selected, setSelected] = React.useState("");
   const location = useLocation();
   const path = location.pathname;
+
+  // Sets the path used to determine if the style should be applied
   const isOverviewSelected = path === "/";
   const isMoreInfoSelected = path.includes("/detail");
 

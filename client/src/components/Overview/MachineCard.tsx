@@ -27,8 +27,8 @@ const MachineCard: React.FC<MachineCardProps> = ({
   predictionResult,
   onPredict,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false); // Control details expand/collapse
+  const [isLoading, setIsLoading] = useState(false); 
   // console.log("MachineCard predictionResult:", predictionResult);
 
   const handlePredictClick = async () => {
@@ -51,19 +51,25 @@ const MachineCard: React.FC<MachineCardProps> = ({
         <div className="card-header" onClick={() => setIsExpanded(!isExpanded)}>
           <p>{machine_id}</p>
         </div>
+        
         <div className="card-footer">
           <Link to={`/${machine_id}/detail`} className="card-info">
             More Information
           </Link>
         </div>
 
+         {/* control the sytles of the machine */}
         <div className="card-status">
           {predictionResult ? (
-            <p className={`status-indicator ${predictionResult === "normal" ? "on" : "off"}`}>
+            <p
+              className={`status-indicator ${
+                predictionResult === "normal" ? "on" : "off"
+              }`}
+            >
               {predictionResult}
             </p>
           ) : (
-            <button 
+            <button
               onClick={handlePredictClick}
               disabled={isLoading}
               className="predict-button"
