@@ -1,3 +1,7 @@
+docker-compose down -v                                    
+docker-compose up --build
+
+
 # 待办事项列表
 
 ## 进行中

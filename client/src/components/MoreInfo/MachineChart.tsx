@@ -31,20 +31,22 @@ function MachineChart() {
         const response = await axios.get(
           `http://localhost:5001/Machines/${machine_id}`
         );
-        const formattedData = response.data.map((item: any) => ({
-          ...item,
-          timestamp: new Date(item.timestamp).toLocaleString(), // 格式化时间戳
-        }));
+        
+        // Sort data by timestamp in ascending order
+        const formattedData = response.data
+          .sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+          .map((item: any) => ({
+            ...item,
+            timestamp: new Date(item.timestamp).toLocaleString(),
+          }));
+          
         setMachineData({ data: formattedData });
         if (response.data.length > 0) {
-          setMachineType(response.data[0].type); // 假设所有数据的 `type` 是相同的
+          setMachineType(response.data[0].type);
         }
 
-        // ---------------ye.3
-        // 为每条历史数据获取预测结果
         const predictionPromises = formattedData.map(async (item: any) => {
           try {
-            // 构造预测请求的数据
             const predictionData = {
               type: item.type,
               airtemp: item.airtemp,
@@ -54,7 +56,6 @@ function MachineChart() {
               toolwearinmins: item.toolwearinmins,
             };
 
-            // 使用 POST 请求发送具体数据进行预测
             const predResponse = await axios.post(
               "http://localhost:5001/Machines/predict-historical",
               predictionData
@@ -89,6 +90,9 @@ function MachineChart() {
     fetchData();
   }, [machine_id]);
 
+  // Get the latest prediction (last item in the sorted array)
+  const latestPrediction = predictions[predictions.length - 1];
+
   return (
     <div>
       {isLoading ? (
@@ -108,25 +112,25 @@ function MachineChart() {
           </div>
 
           <div className="p-2 m-0 rounded-lg text-[#173F51] bg-[#d4eaf7] shadow-lg">
-            {/* prediction */}
-            <p className="text-left text-lg font-bold block p-2  ">
+            <p className="text-left text-lg font-bold block p-2">
               Latest prediction status
             </p>
-            {predictions.length > 0 && (
+            {latestPrediction && (
               <div className="p-4">
-                <p>Status: {predictions[0].prediction.status}</p>
+                <p>Status: {latestPrediction.prediction.status}</p>
                 <p>
                   Possibility of failure:{" "}
                   {(
-                    predictions[0].prediction.ensemble_probability * 100
+                    latestPrediction.prediction.ensemble_probability * 100
                   ).toFixed(2)}
                   %
                 </p>
-                <p>Advice: {predictions[0].prediction.recommendation}</p>
+                <p>Advice: {latestPrediction.prediction.recommendation}</p>
               </div>
             )}
           </div>
 
+          {/* Rest of the charts remain unchanged */}
           <div className="w-full col-span-10 rounded bg-[#f5f4f1] shadow-md">
             <ResponsiveContainer width="100%" height={500} className="p-4">
               <LineChart data={machineData.data}>
@@ -163,6 +167,7 @@ function MachineChart() {
               </LineChart>
             </ResponsiveContainer>
           </div>
+
           <div className="w-full col-span-10 rounded bg-[#f5f4f1] shadow-md">
             <ResponsiveContainer width="100%" height={500} className="p-4">
               <LineChart data={machineData.data}>
@@ -199,6 +204,7 @@ function MachineChart() {
               </LineChart>
             </ResponsiveContainer>
           </div>
+
           <div className="w-full col-span-10 rounded bg-[#f5f4f1] shadow-md">
             <ResponsiveContainer width="100%" height={400} className="p-4">
               <BarChart data={machineData.data}>
@@ -220,8 +226,6 @@ function MachineChart() {
             </ResponsiveContainer>
           </div>
 
-          {/* ---------------ye.3 */}
-          {/* 预测结果图表 */}
           <div className="w-full col-span-10 rounded bg-[#f5f4f1] shadow-md">
             <ResponsiveContainer width="100%" height={300} className="p-4">
               <BarChart data={predictions}>

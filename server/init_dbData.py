@@ -63,7 +63,7 @@ def initialize_data(config):
 
     print("Initial data inserted successfully.")
 '''
-
+# uid 9975 is power fail
 def import_realtime_data(csv_path):
     try:
         # 读取CSV文件

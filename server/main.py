@@ -209,9 +209,19 @@ def read_Machines(
 
 @app.get("/Machines/{machine_id}", response_model=list[Machine])
 def read_machine(machine_id: str, session: SessionDep) -> list[Machine]:
-    machines = session.query(Machine).filter(Machine.machine_id == machine_id).order_by(Machine.timestamp.asc()).limit(10).all()
+    # First get the last 10 records in descending order
+    machines = session.query(Machine)\
+        .filter(Machine.machine_id == machine_id)\
+        .order_by(Machine.timestamp.desc())\
+        .limit(10)\
+        .all()
+    
     if not machines:
         raise HTTPException(status_code=404, detail="Machine not found")
+    
+    # Sort the results in ascending order
+    machines.sort(key=lambda x: x.timestamp)
+    
     return machines
 
 

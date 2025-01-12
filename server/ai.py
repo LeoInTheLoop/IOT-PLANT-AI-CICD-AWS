@@ -7,7 +7,8 @@ from os.path import join
 
 BASE_DIR = Path(__file__).resolve().parent
 
-# -------------ye
+THRETENHOLD = 0.5
+THRETENHOLDSTATUS = 0.5
 # 全局变量声明
 decision_tree_model = None
 random_forest_model = None
@@ -36,9 +37,9 @@ def predict_ensemble(features: np.ndarray):
         # ensemble_prediction = (nn_prediction + dt_prediction + rf_prediction) / 3
         # ---------------ye
         # ensemble_prediction = (dt_prediction + rf_prediction) / 2
-        ensemble_prediction = rf_prediction
+        ensemble_prediction = 1-rf_prediction +0.05
 
-        status = "Critical" if ensemble_prediction > 0.7 else "Warning" if ensemble_prediction > 0.3 else "Normal"
+        status = "Critical" if ensemble_prediction > 0.7 else "Warning" if ensemble_prediction > THRETENHOLDSTATUS else "Normal"
         
         return {
             "status": status,
@@ -48,7 +49,7 @@ def predict_ensemble(features: np.ndarray):
                 # "decision_tree": dt_prediction,
                 "random_forest": rf_prediction
             },
-            "maintenance_needed": ensemble_prediction > 0.5
+            "maintenance_needed": ensemble_prediction > THRETENHOLD
         }
     except Exception as e:
         raise ValueError(f"Prediction error: {str(e)}")
