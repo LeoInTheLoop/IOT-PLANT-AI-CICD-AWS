@@ -4,23 +4,56 @@ This project implements a predictive maintenance system for industrial IoT (IIoT
 
 ---
 
-## How to run the system
+## Table of Contents
 
-```bash
-docker-compose down -v // no necessary
-docker-compose up --build
-cd client // Move to the client folder
-npm run dev // Open the default front-end URL
-```
+1. [Deployment Guide](#deployment-guide)
+2. [Technologies Used](#technologies-used)
+3. [Project Structure](#project-structure)
+4. [Frequently Asked Questions](#Frequently-Asked-Questions)
 
 ---
 
-## Table of Contents
+## Deployment Guide
 
-1. [Technologies Used](#technologies-used)
-2. [Project Structure](#project-structure)
-3. [Deployment Guide](#deployment-guide)
-4. [Frequently Asked Questions](#Frequently-Asked-Questions)
+### Prerequisites
+
+1. Docker and Docker Compose installed on the server.
+2. Python 3.8 or later installed (for standalone backend testing).
+3. Node.js 16.x or later installed (for standalone frontend testing).
+
+### How to run the system
+
+Method 1: Using Docker
+
+1. Start the project:
+   ```bash
+   docker-compose down -v // no necessary
+   docker-compose up --build -d
+   ```
+2. Directly access the application:
+   - Frontend interface: [http://localhost:3000](http://localhost:3000)
+   - Backend API:[http://localhost:5001](http://localhost:5001)
+3. Stop the project:
+   ```bash
+   docker-compose down -v
+   ```
+
+Method 2: Local Development Environment
+
+1. Install frontend dependencies:
+   ```bash
+   npm install
+   cd client // Move to the client folder
+   ```
+2. Run the frontend development server：
+   ```bash
+   npm run dev // Open the default front-end URL
+   ```
+3. Start the backend service in a new terminal：
+   ```bash
+   cd server
+   docker-compose up --build -d
+   ```
 
 ---
 
@@ -101,47 +134,6 @@ server/
 ├── requirements.txt       # Python dependencies
 └── docker-compose.yml     # Docker Compose configuration
 ```
-
----
-
-## Deployment Guide
-
-### Prerequisites
-
-1. Docker and Docker Compose installed on the server.
-2. Python 3.8 or later installed (for standalone backend testing).
-3. Node.js 16.x or later installed (for standalone frontend testing).
-
-### Method 1: Using Docker
-
-1. Start the project:
-   ```bash
-   docker-compose up --build -d
-   ```
-2. Access the application:
-   - Frontend interface: [http://localhost:3000](http://localhost:3000)
-   - Backend API:[http://localhost:5001](http://localhost:5001)
-3. Stop the project:
-   ```bash
-   docker-compose down -v
-   ```
-
-### Method 2: Local Development Environment
-
-1. Install frontend dependencies:
-   ```bash
-   cd client
-   npm install
-   ```
-2. Run the frontend development server：
-   ```bash
-   npm run dev
-   ```
-3. Start the backend service in a new terminal：
-   ```bash
-   cd server
-   docker-compose up --build -d
-   ```
 
 ---
 

@@ -65,7 +65,7 @@ mosquitto_pub -h broker.hivemq.com -t "Machine/data" -m '{
     "toolwearinmins": 50
 }'
 
-可用测试mqtt网站
+can be use to test mqtt website
 broker.hivemq.com  
 broker.emqx.io
 test.mosquitto.org
