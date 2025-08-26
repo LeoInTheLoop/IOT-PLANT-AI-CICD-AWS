@@ -32,7 +32,7 @@ function MachineChart() {
 
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/Machines/${machine_id}`
+          `${import.meta.env.VITE_API_BASE_URL}/Machines/${machine_id}`
         );
 
         // Sort data by timestamp in ascending order
@@ -65,7 +65,7 @@ function MachineChart() {
             };
 
             const predResponse = await axios.post(
-              `${API_BASE_URL}/Machines/predict-historical`,
+              `${import.meta.env.VITE_API_BASE_URL}/Machines/predict-historical`,
               predictionData
             );
 

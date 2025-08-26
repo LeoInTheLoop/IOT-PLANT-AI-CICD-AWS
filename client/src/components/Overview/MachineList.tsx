@@ -23,7 +23,7 @@ const MachineList = () => {
   useEffect(() => {
     const fetchMachines = async () => {
       try {
-        const response = await fetch("/api/machines/latest");
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/machines/latest`);
         const data = await response.json();
         console.log("Fetched machines:", data);
 
@@ -85,7 +85,7 @@ const MachineList = () => {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/Machines/predict-historical`,
+        `${import.meta.env.VITE_API_BASE_URL}/Machines/predict-historical`,
         {
           method: "POST",
           headers: {

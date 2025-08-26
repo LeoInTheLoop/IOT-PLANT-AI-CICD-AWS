@@ -24,6 +24,7 @@ services:
       # ------ye 挂载整个server目录
       - ./server:/app 
     environment:
+      - NODE_ENV=production
     # --------------------------------------------------》
       # - DATABASE_URL=postgresql://postgres:postgres@db:5432/Machine_data
       # -------------ye
