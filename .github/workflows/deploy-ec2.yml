@@ -1,0 +1,48 @@
+name: CI/CD to EC2 with Docker Compose
+
+on:
+  push:
+    branches: [ "main" ]  # 推送到main就自动部署
+  workflow_dispatch: {}     # 允许手动触发
+
+concurrency:
+  group: ec2-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (for version info only)
+        uses: actions/checkout@v4
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            APP_DIR="/home/ubuntu/IOT-PLANT-AI-CICD-AWS"
+
+            # 首次不存在就 clone，存在就硬更新到 main 最新提交
+            if [ ! -d "$APP_DIR/.git" ]; then
+              git clone https://github.com/LeoInTheLoop/IOT-PLANT-AI-CICD-AWS.git "$APP_DIR"
+            fi
+            cd "$APP_DIR"
+            git fetch origin
+            git reset --hard origin/main
+
+            # 可选：如果你有 .env.production，可以在这里写入/拷贝
+            # echo "API_URL=http://YOUR.EC2.IP:5001" > .env
+
+            # 拉起容器（重建镜像，平滑重启）
+            docker compose down || true
+            docker compose up -d --build
+
+            # 清理无用镜像
+            docker image prune -f
+
+      - name: Print deployed commit
+        run: echo "Deployed $GITHUB_SHA to EC2"
