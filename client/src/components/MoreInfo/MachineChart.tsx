@@ -13,6 +13,7 @@ import {
   Bar,
   ResponsiveContainer,
 } from "recharts";
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function MachineChart() {
   const { machine_id } = useParams();
@@ -31,7 +32,7 @@ function MachineChart() {
 
       try {
         const response = await axios.get(
-          `/api/Machines/${machine_id}`
+          `${API_BASE_URL}/Machines/${machine_id}`
         );
 
         // Sort data by timestamp in ascending order
@@ -64,7 +65,7 @@ function MachineChart() {
             };
 
             const predResponse = await axios.post(
-              "/api/Machines/predict-historical",
+              `${API_BASE_URL}/Machines/predict-historical`,
               predictionData
             );
 

@@ -85,7 +85,7 @@ const MachineList = () => {
 
     try {
       const response = await fetch(
-        "/api/Machines/predict-historical",
+        `${API_BASE_URL}/Machines/predict-historical`,
         {
           method: "POST",
           headers: {
