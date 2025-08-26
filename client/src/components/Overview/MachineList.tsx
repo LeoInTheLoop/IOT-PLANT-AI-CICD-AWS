@@ -23,7 +23,7 @@ const MachineList = () => {
   useEffect(() => {
     const fetchMachines = async () => {
       try {
-        const response = await fetch("http://localhost:5001/machines/latest");
+        const response = await fetch("/api/machines/latest");
         const data = await response.json();
         console.log("Fetched machines:", data);
 
@@ -85,7 +85,7 @@ const MachineList = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/Machines/predict-historical",
+        "/api/Machines/predict-historical",
         {
           method: "POST",
           headers: {

@@ -31,7 +31,7 @@ function MachineChart() {
 
       try {
         const response = await axios.get(
-          `http://localhost:5001/Machines/${machine_id}`
+          `/api/Machines/${machine_id}`
         );
 
         // Sort data by timestamp in ascending order
@@ -64,7 +64,7 @@ function MachineChart() {
             };
 
             const predResponse = await axios.post(
-              "http://localhost:5001/Machines/predict-historical",
+              "/api/Machines/predict-historical",
               predictionData
             );
 
